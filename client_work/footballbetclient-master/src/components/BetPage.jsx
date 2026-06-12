@@ -1,0 +1,224 @@
+import {useEffect, useState} from "react";
+import {useNavigate} from "react-router-dom";
+import {placeBet} from "../service/betApi.js";
+import {getMatches} from "../service/leagueApi.js";
+import {getProfile} from "../service/authApi.js";
+
+const getErrorMessage = (error, fallback) => {
+    const data = error.response?.data;
+    if (typeof data === "string") {
+        return data;
+    }
+    return data?.message || data?.error || fallback;
+};
+
+function BetPage() {
+    const navigate = useNavigate();
+    const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+    const [matches, setMatches] = useState([]);
+    const [amountByMatch, setAmountByMatch] = useState({});
+    const [homeScoreByMatch, setHomeScoreByMatch] = useState({});
+    const [awayScoreByMatch, setAwayScoreByMatch] = useState({});
+    const [balance, setBalance] = useState(Number(user?.balance || 0));
+    const [message, setMessage] = useState("");
+
+    const loadMatches = () => {
+        getMatches()
+            .then((response) => setMatches(response.data.filter((match) => match.status === "PENDING")))
+            .catch(() => setMessage("לא ניתן לטעון משחקים להימור כרגע."));
+    };
+
+    useEffect(() => {
+        loadMatches();
+        if (user?.id) {
+            getProfile(user.id)
+                .then((response) => {
+                    setBalance(Number(response.data.balance || 0));
+                    localStorage.setItem("currentUser", JSON.stringify(response.data));
+                })
+                .catch(() => setMessage("לא ניתן לטעון יתרה עדכנית כרגע."));
+        }
+    }, [user?.id]);
+
+    const handlePlaceBet = (matchId) => {
+        if (!user?.id) {
+            setMessage("צריך להתחבר לפני ביצוע הימור.");
+            navigate("/login");
+            return;
+        }
+
+        const amount = Number(amountByMatch[matchId]);
+        const homeScoreValue = homeScoreByMatch[matchId];
+        const awayScoreValue = awayScoreByMatch[matchId];
+        const predictedHomeScore = Number(homeScoreValue);
+        const predictedAwayScore = Number(awayScoreValue);
+        const predictedOutcome = getOutcomeFromScore(predictedHomeScore, predictedAwayScore);
+
+        if (!amount || amount <= 0) {
+            setMessage("הזן סכום חיובי.");
+            return;
+        }
+
+        if (amount > balance) {
+            setMessage(`אין מספיק יתרה. היתרה שלך היא ${balance.toFixed(2)} בלבד.`);
+            return;
+        }
+
+        if (homeScoreValue === undefined || homeScoreValue === "" || awayScoreValue === undefined || awayScoreValue === ""
+            || !Number.isInteger(predictedHomeScore) || !Number.isInteger(predictedAwayScore)
+            || predictedHomeScore < 0 || predictedHomeScore > 3 || predictedAwayScore < 0 || predictedAwayScore > 3) {
+            setMessage("בחר תוצאה מדויקת עד 3 שערים לכל קבוצה.");
+            return;
+        }
+
+        if (!predictedOutcome) {
+            setMessage("בחר תוצאה מדויקת.");
+            return;
+        }
+
+        placeBet({
+            userId: user.id,
+            matchId,
+            predictedOutcome,
+            predictedHomeScore,
+            predictedAwayScore,
+            amount
+        })
+            .then(() => {
+                const updatedUser = {...user, balance: balance - amount};
+                localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+                setBalance((prev) => prev - amount);
+                setMessage("ההימור נשמר בהצלחה.");
+                setAmountByMatch((prev) => ({...prev, [matchId]: ""}));
+                setHomeScoreByMatch((prev) => ({...prev, [matchId]: ""}));
+                setAwayScoreByMatch((prev) => ({...prev, [matchId]: ""}));
+            })
+            .catch((error) => {
+                setMessage(getErrorMessage(error, "שמירת ההימור נכשלה."));
+            });
+    };
+
+    return (
+        <div className="page-shell">
+            <h1>עמוד הימורים</h1>
+            <p>ניתן להמר רק על משחקים בסטטוס PENDING, לפני תחילת המחזור.</p>
+            <p className="balance-pill">יתרה זמינה: {balance.toFixed(2)}</p>
+
+            {message && <p className="status-message">{message}</p>}
+
+            <div className="grid-list">
+                {matches.map((match) => (
+                    <section className="match-card" key={match.id}>
+                        <h3>{match.homeTeam.name} נגד {match.awayTeam.name}</h3>
+                        <p>מחזור {match.roundNumber}</p>
+                        <p>סטטוס: {match.status}</p>
+                        <OddsPanel match={match}/>
+
+                        <p className="field-label">בחר תוצאה מדויקת</p>
+
+                        <input
+                            type="number"
+                            min="1"
+                            max={balance}
+                            value={amountByMatch[match.id] || ""}
+                            placeholder="סכום"
+                            onChange={(e) => setAmountByMatch((prev) => ({...prev, [match.id]: e.target.value}))}
+                        />
+
+                        <div className="score-prediction">
+                            <select
+                                value={homeScoreByMatch[match.id] || ""}
+                                placeholder={`${match.homeTeam.name} שערים`}
+                                onChange={(e) => setHomeScoreByMatch((prev) => ({...prev, [match.id]: e.target.value}))}
+                            >
+                                <option value="">בית</option>
+                                {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
+                            </select>
+                            <span>:</span>
+                            <select
+                                value={awayScoreByMatch[match.id] || ""}
+                                placeholder={`${match.awayTeam.name} שערים`}
+                                onChange={(e) => setAwayScoreByMatch((prev) => ({...prev, [match.id]: e.target.value}))}
+                            >
+                                <option value="">חוץ</option>
+                                {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
+                            </select>
+                        </div>
+
+                        <p className="exact-odds">
+                            יחס לתוצאה שבחרת: {getSelectedExactOdds(match, homeScoreByMatch[match.id], awayScoreByMatch[match.id])}
+                        </p>
+
+                        <button onClick={() => handlePlaceBet(match.id)}>
+                            שלח הימור
+                        </button>
+                    </section>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+const SCORE_OPTIONS = [0, 1, 2, 3];
+
+function OddsPanel({match}) {
+    const odds = calculateOutcomeOdds(match);
+
+    return (
+        <div className="odds-panel">
+            <span>{match.homeTeam.name}: {odds.home}</span>
+            <span>תיקו: {odds.draw}</span>
+            <span>{match.awayTeam.name}: {odds.away}</span>
+        </div>
+    );
+}
+
+function getSelectedExactOdds(match, homeScoreValue, awayScoreValue) {
+    if (homeScoreValue === undefined || homeScoreValue === "" || awayScoreValue === undefined || awayScoreValue === "") {
+        return "-";
+    }
+
+    const homeScore = Number(homeScoreValue);
+    const awayScore = Number(awayScoreValue);
+    const outcome = getOutcomeFromScore(homeScore, awayScore);
+
+    if (!outcome) {
+        return "-";
+    }
+
+    return calculateExactScoreOdds(match, outcome, homeScore, awayScore);
+}
+
+function calculateOutcomeOdds(match) {
+    const homeSkill = Number(match.homeTeam.skillLevel || 1);
+    const awaySkill = Number(match.awayTeam.skillLevel || 1);
+    const totalSkill = homeSkill + awaySkill;
+
+    return {
+        home: roundOdds(1 / (homeSkill / totalSkill)),
+        draw: roundOdds(1 / 0.25),
+        away: roundOdds(1 / (awaySkill / totalSkill))
+    };
+}
+
+function calculateExactScoreOdds(match, outcome, homeScore, awayScore) {
+    const outcomeOdds = calculateOutcomeOdds(match);
+    const baseOdds = outcome === "HOME_WIN" ? outcomeOdds.home : outcome === "AWAY_WIN" ? outcomeOdds.away : outcomeOdds.draw;
+    const totalGoals = homeScore + awayScore;
+    const multiplier = 3.0 + (Math.min(totalGoals, 6) * 0.35);
+
+    return roundOdds(baseOdds * multiplier);
+}
+
+function roundOdds(value) {
+    return (Math.round(value * 100) / 100).toFixed(2);
+}
+
+function getOutcomeFromScore(homeScore, awayScore) {
+    if (homeScore > awayScore) return "HOME_WIN";
+    if (awayScore > homeScore) return "AWAY_WIN";
+    if (homeScore === awayScore) return "DRAW";
+    return null;
+}
+
+export default BetPage;
