@@ -13,6 +13,17 @@
     overflow: hidden !important;
 }
 
+.bet-clean-page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: var(--pattern-pitch), var(--pattern-hex);
+    background-size: 100% 100%, 40px 40px;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: -1;
+}
+
 .bet-nav-bar {
     width: 100% !important;
     height: 70px !important;
@@ -115,10 +126,13 @@
 
 .bet-header-section h1 {
     color: var(--text-primary) !important;
-    font-size: 2rem !important;
+    font-size: 2.5rem !important;
     font-weight: 800 !important;
     margin: 0 0 12px 0 !important;
     letter-spacing: -0.01em !important;
+    font-family: var(--font-display) !important;
+    text-transform: uppercase !important;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
 }
 
 .bet-header-section p {
@@ -151,10 +165,12 @@
 }
 
 .bet-match-card {
-    background: var(--bg-surface) !important;
-    border-radius: 20px !important;
+    background: linear-gradient(145deg, var(--bg-surface), rgba(0,0,0,0.3)) !important;
+    border-radius: 8px !important;
     box-shadow: var(--shadow-md) !important;
     border: 1px solid var(--glass-border) !important;
+    border-top: 1px solid rgba(255,255,255,0.2) !important;
+    border-left: 1px solid rgba(255,255,255,0.1) !important;
     padding: 28px !important;
     box-sizing: border-box !important;
     display: flex !important;
@@ -164,19 +180,22 @@
     backdrop-filter: blur(var(--glass-blur)) !important;
     -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
     animation: fadeInUp 0.5s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%) !important;
 }
 
 .bet-match-card:hover {
-    transform: translateY(-4px) !important;
+    transform: translateY(-6px) scale(1.02) !important;
     box-shadow: var(--shadow-lg), 0 0 20px var(--accent-primary-glow) !important;
     border-color: var(--accent-primary) !important;
 }
 
 .bet-match-card h3 {
     color: var(--text-primary) !important;
-    font-size: 1.25rem !important;
+    font-size: 1.4rem !important;
     font-weight: 800 !important;
     margin: 0 0 8px 0 !important;
+    font-family: var(--font-display) !important;
+    letter-spacing: 0.02em !important;
 }
 
 .bet-match-card h3 span {
@@ -205,7 +224,7 @@
 
 .bet-odds-panel span {
     flex: 1 !important;
-    font-size: 0.85rem !important;
+    font-size: 0.9rem !important;
     color: var(--text-primary) !important;
     font-weight: 700 !important;
     white-space: nowrap !important;
@@ -214,7 +233,8 @@
 .bet-odds-panel strong {
     color: var(--accent-secondary) !important;
     font-weight: 900 !important;
-    font-size: 0.95rem !important;
+    font-size: 1.1rem !important;
+    font-family: var(--font-display) !important;
 }
 
 .bet-field-label {
@@ -280,18 +300,22 @@
 .bet-score-prediction span {
     font-weight: 900 !important;
     color: var(--accent-primary) !important;
-    font-size: 1.4rem !important;
+    font-size: 1.6rem !important;
+    font-family: var(--font-display) !important;
+    font-style: italic !important;
 }
 
 .bet-exact-odds {
-    font-size: 0.95rem !important;
+    font-size: 1.1rem !important;
     color: var(--accent-primary) !important;
     font-weight: 800 !important;
     background-color: var(--accent-primary-glow) !important;
     border: 1px dashed var(--accent-primary) !important;
     padding: 10px !important;
-    border-radius: 10px !important;
+    border-radius: 4px !important;
     margin: 0 0 24px 0 !important;
+    font-family: var(--font-display) !important;
+    clip-path: polygon(8px 0, 100% 0, calc(100% - 8px) 100%, 0 100%) !important;
 }
 
 .bet-action-btn {

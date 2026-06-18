@@ -15,6 +15,17 @@
     overflow: hidden !important;
 }
 
+.main-clean-page::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-image: var(--pattern-pitch), var(--pattern-hex);
+    background-size: 100% 100%, 40px 40px;
+    opacity: 0.8;
+    pointer-events: none;
+    z-index: -1;
+}
+
 /* Navbar */
 .main-nav-bar {
     width: 100% !important;
@@ -63,12 +74,14 @@
 
 /* Hero Card */
 .main-hero-card {
-    background: var(--bg-surface) !important;
+    background: linear-gradient(145deg, var(--bg-surface), rgba(0,0,0,0.3)) !important;
     width: 100% !important;
-    max-width: 580px !important;
-    border-radius: 24px !important;
-    box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 0, 0, 0.1) !important;
+    max-width: 620px !important;
+    border-radius: 8px !important;
+    box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 0, 0, 0.2) !important;
     border: 1px solid var(--glass-border) !important;
+    border-top: 1px solid rgba(255,255,255,0.2) !important;
+    border-left: 1px solid rgba(255,255,255,0.1) !important;
     box-sizing: border-box !important;
     padding: 56px 40px !important;
     display: flex !important;
@@ -77,6 +90,16 @@
     backdrop-filter: blur(var(--glass-blur)) !important;
     -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
     animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 30px), calc(100% - 30px) 100%, 0 100%) !important;
+    position: relative !important;
+}
+
+.main-hero-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, transparent 50%, var(--accent-primary) 50%);
 }
 
 .main-hero-badge {
@@ -87,11 +110,14 @@
 
 .main-hero-card h1 {
     color: var(--text-primary) !important;
-    font-size: 2.5rem !important;
+    font-size: 3rem !important;
     font-weight: 900 !important;
     margin-top: 0 !important;
     margin-bottom: 16px !important;
     letter-spacing: -0.02em !important;
+    font-family: var(--font-display) !important;
+    text-shadow: 0 4px 10px rgba(0,0,0,0.3) !important;
+    text-transform: uppercase !important;
 }
 
 .main-hero-card p {
