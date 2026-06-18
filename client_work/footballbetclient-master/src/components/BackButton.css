@@ -1,34 +1,40 @@
 /* מיכל הלחצן - ממוקם קבוע מתחת ל-NavBar */
 .back-button-container {
     position: fixed !important;
-    top: 80px !important; /* מרווח מדויק מתחת לבר העליון שלכם שגובהו 65px */
-    right: 25px !important; /* מוצמד לימין עם מרווח אלגנטי מהקצה */
-    z-index: 99999 !important; /* מבטיח שהוא תמיד ירחף מעל כל שאר הרכיבים */
+    top: 85px !important;
+    right: 32px !important;
+    z-index: 9999 !important;
     direction: rtl !important;
+    animation: fadeInUp 0.4s ease both !important;
 }
 
 /* עיצוב הלחצן עצמו */
 .back-button {
-    background-color: #1e3a27 !important; /* הירוק הכהה של האפליקציה שלכם */
-    color: #ffffff !important;
-    border: none !important;
-    border-radius: 8px !important;
-    padding: 10px 18px !important;
+    background-color: var(--bg-surface) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: 50px !important;
+    padding: 10px 20px !important;
     font-size: 0.95rem !important;
     font-weight: 600 !important;
     cursor: pointer !important;
     box-sizing: border-box !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    box-shadow: var(--shadow-md) !important;
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
-    transition: all 0.2s ease-in-out !important;
-    font-family: 'Segoe UI', system-ui, sans-serif !important;
+    transition: all 0.3s ease !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+    min-height: unset !important;
+    margin: 0 !important;
 }
 
-/* אפקט ריחוף עכבר (Hover) אינטראקטיבי */
+/* אפקט ריחוף עכבר */
 .back-button:hover {
-    background-color: #2d5a3c !important; /* ירוק מעט בהיר יותר בריחוף */
-    transform: translateX(3px) !important; /* תזוזה קלה ימינה שנותנת תחושת לחיצה */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+    background-color: var(--bg-glass-hover) !important;
+    color: var(--accent-primary) !important;
+    border-color: var(--accent-primary) !important;
+    transform: translateX(4px) !important;
+    box-shadow: var(--shadow-lg), 0 0 16px var(--accent-primary-glow) !important;
 }

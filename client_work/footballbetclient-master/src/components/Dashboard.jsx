@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../service/api.js";
+import ThemeToggle from "./ThemeToggle.jsx";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -91,8 +92,11 @@ function Dashboard() {
                     <span className="dash-nav-divider">|</span>
                     <span className="dash-nav-subtext">אפליקציית הימורי כדורגל</span>
                 </div>
-                <div className="dash-nav-user">
-                    {user ? `שלום, ${user.username || user.email} 👤` : "שלום, אורח 👤"}
+                <div className="dash-nav-actions">
+                    <div className="dash-nav-user">
+                        {user ? `שלום, ${user.username || user.email} 👤` : "שלום, אורח 👤"}
+                    </div>
+                    <ThemeToggle />
                 </div>
             </header>
 

@@ -1,40 +1,37 @@
-/* מניעת השפעות של קבצי CSS חיצוניים ומתיחה מלאה על כל המסך */
+/* We can reuse the exact same classes as Login since they share the same structure, 
+   but since this file is already imported in RegisterForm.jsx, we'll redefine them 
+   or ensure they match the dual-theme design system. */
+
 .login-clean-page {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    /* רקע דינמי משולב של אצטדיון כדורגל עם אלמנטים גרפיים כהים */
-    background: linear-gradient(135deg, rgba(10, 38, 20, 0.9) 0%, rgba(5, 20, 10, 0.95) 100%),
-    url('https://images.unsplash.com/photo-1508098682722-e99c43a406b2?q=80&w=1920') no-repeat center center/cover !important;
-    font-family: 'Segoe UI', system-ui, sans-serif !important;
+    background: var(--hero-gradient) !important;
+    background-size: 400% 400% !important;
+    animation: shimmer 15s ease infinite !important;
     margin: 0 !important;
     padding: 0 !important;
-    box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
     z-index: 99999 !important;
-    overflow-y: auto !important;
+    overflow: hidden !important;
 }
 
-/* סרגל ניווט עליון בסגנון ספורטיבי */
 .login-nav-bar {
     width: 100% !important;
-    height: 65px !important;
-    background-color: rgba(30, 58, 39, 0.85) !important;
-    backdrop-filter: blur(10px) !important;
+    height: 70px !important;
+    background-color: var(--navbar-bg) !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 0 30px !important;
+    padding: 0 32px !important;
     box-sizing: border-box !important;
-    color: #ffffff !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
-    border-bottom: 1px solid rgba(163, 230, 53, 0.2) !important;
-}
-
-.login-nav-bar {
+    border-bottom: 1px solid var(--navbar-border) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    box-shadow: var(--shadow-sm) !important;
     direction: rtl !important;
 }
 
@@ -44,66 +41,64 @@
     gap: 12px !important;
 }
 
+.login-nav-icon {
+    font-size: 1.5rem !important;
+}
+
 .login-nav-logo-text {
-    color: #a3e635 !important;
+    color: var(--accent-primary) !important;
     font-weight: 800 !important;
-    font-size: 1.3rem !important;
-    text-shadow: 0 0 10px rgba(163, 230, 53, 0.4) !important;
+    font-size: 1.4rem !important;
+    text-shadow: 0 0 10px var(--accent-primary-glow) !important;
 }
 
-.login-nav-divider {
-    color: #4d7c0f !important;
-    padding: 0 4px !important;
-}
-
-.login-nav-subtext {
-    font-size: 1rem !important;
-    color: #f1f5f9 !important;
-    font-weight: 500 !important;
+.login-nav-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
 }
 
 .login-nav-user {
-    font-size: 0.95rem !important;
-    color: #cbd5e1 !important;
+    font-size: 1rem !important;
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
 }
 
-/* קונטיינר מרכזי מיושר */
 .login-content-container {
     flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
     align-items: center !important;
-    padding: 40px 20px !important;
+    padding: 24px !important;
     box-sizing: border-box !important;
     width: 100% !important;
 }
 
-/* תגית ברוכים הבאים המעוצבת באפקט זהב/ירוק עדין */
 .login-welcome-badge {
-    background: rgba(30, 58, 39, 0.9) !important;
+    background-color: var(--accent-primary) !important;
     color: #ffffff !important;
-    padding: 8px 26px !important;
-    border-radius: 20px !important;
+    padding: 8px 24px !important;
+    border-radius: 50px !important;
     font-size: 0.95rem !important;
     font-weight: 700 !important;
-    margin-bottom: 20px !important;
-    border: 1px solid #a3e635 !important;
-    box-shadow: 0 0 15px rgba(163, 230, 53, 0.2) !important;
-    letter-spacing: 0.5px !important;
+    margin-bottom: 24px !important;
+    box-shadow: var(--shadow-glow) !important;
+    animation: fadeInUp 0.5s ease both !important;
 }
 
-/* הכרטיס המרכזי - אפקט זכוכית יוקרתי (Glassmorphism) שמתמזג עם האצטדיון ברקע */
 .login-main-card {
-    background: rgba(255, 255, 255, 0.88) !important;
+    background: var(--bg-surface) !important;
     width: 100% !important;
-    max-width: 450px !important;
+    max-width: 440px !important;
     border-radius: 24px !important;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
-    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    box-shadow: var(--shadow-lg), 0 0 40px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid var(--glass-border) !important;
     box-sizing: border-box !important;
     padding: 40px !important;
-    backdrop-filter: blur(8px) !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+    animation: fadeInUp 0.6s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both !important;
 }
 
 .login-card-content {
@@ -114,114 +109,127 @@
 }
 
 .login-card-headline {
-    color: #0f172a !important;
-    font-size: 1.8rem !important;
+    color: var(--text-primary) !important;
+    font-size: 1.6rem !important;
     font-weight: 800 !important;
     margin-top: 0 !important;
-    margin-bottom: 25px !important;
+    margin-bottom: 24px !important;
     text-align: center !important;
     width: 100% !important;
-    letter-spacing: -0.5px !important;
+    letter-spacing: -0.01em !important;
 }
 
-/* הטופס והשדות */
 .login-form-element {
     display: flex !important;
     flex-direction: column !important;
-    gap: 18px !important;
+    gap: 16px !important;
     width: 100% !important;
     box-sizing: border-box !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
 }
 
 .login-field-group {
     display: flex !important;
     flex-direction: column !important;
-    gap: 6px !important;
+    gap: 8px !important;
     text-align: right !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    direction: rtl !important;
 }
 
 .login-field-group label {
     font-size: 0.95rem !important;
-    color: #334155 !important;
-    font-weight: 700 !important;
+    color: var(--text-secondary) !important;
+    font-weight: 600 !important;
 }
 
 .login-field-group input {
     width: 100% !important;
-    padding: 14px !important;
+    padding: 12px 16px !important;
     box-sizing: border-box !important;
-    border: 1.5px solid #cbd5e1 !important;
+    border: 1px solid var(--border-primary) !important;
     border-radius: 12px !important;
-    background-color: rgba(248, 250, 252, 0.8) !important;
-    color: #0f172a !important;
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
     font-size: 1rem !important;
     text-align: right !important;
-    transition: all 0.25s ease !important;
+    transition: all 0.3s ease !important;
+    margin: 0 !important;
 }
 
 .login-field-group input:focus {
     outline: none !important;
-    border-color: #22c55e !important;
-    background-color: #ffffff !important;
-    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.15) !important;
+    border-color: var(--accent-primary) !important;
+    background-color: var(--bg-input-focus) !important;
+    box-shadow: 0 0 0 3px var(--accent-primary-glow) !important;
 }
 
-/* כפתור הרשמה ירוק זרחני ומזמין - מודגש ובולט */
 .login-action-btn {
     width: 100% !important;
-    padding: 15px !important;
-    background: linear-gradient(135deg, #a3e635 0%, #84cc16 100%) !important;
-    color: #1e3a27 !important;
+    padding: 16px !important;
+    background: var(--accent-primary) !important;
+    color: #ffffff !important;
     border: none !important;
     border-radius: 12px !important;
-    font-size: 1.15rem !important;
-    font-weight: 800 !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
     cursor: pointer !important;
-    box-shadow: 0 5px 15px rgba(163, 230, 53, 0.4) !important;
-    margin-top: 10px !important;
-    transition: all 0.25s ease !important;
+    box-shadow: var(--shadow-glow), var(--shadow-md) !important;
+    margin-top: 8px !important;
+    transition: all 0.3s ease !important;
     box-sizing: border-box !important;
+    min-height: unset !important;
 }
 
 .login-action-btn:hover:not(:disabled) {
-    background: linear-gradient(135deg, #bbf7d0 0%, #a3e635 100%) !important;
-    box-shadow: 0 8px 20px rgba(163, 230, 53, 0.6) !important;
+    background: var(--accent-primary-hover) !important;
     transform: translateY(-2px) !important;
+    box-shadow: 0 0 25px var(--accent-primary-glow), var(--shadow-lg) !important;
 }
 
-/* מצב שהכפתור חסום בגלל וולידציה */
 .login-action-btn:disabled {
-    background: #cbd5e1 !important;
-    color: #94a3b8 !important;
-    box-shadow: none !important;
+    background: var(--bg-input) !important;
+    color: var(--text-muted) !important;
+    border: 1px solid var(--border-primary) !important;
     cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
 }
 
-/* הודעות סטטוס */
 .login-status {
-    margin-top: 15px !important;
-    padding: 12px !important;
-    border-radius: 8px !important;
+    margin-top: 16px !important;
+    padding: 12px 16px !important;
+    border-radius: 10px !important;
     font-size: 0.95rem !important;
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     text-align: center !important;
     width: 100% !important;
     box-sizing: border-box !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05) !important;
 }
-.login-success { background-color: #dcfce7 !important; color: #15803d !important; border: 1px solid #bbf7d0 !important;}
-.login-error { background-color: #fee2e2 !important; color: #b91c1c !important; border: 1px solid #fecaca !important;}
 
-/* אזור תחתון לקשרים וחזרה אחורה */
+.login-success { 
+    background-color: var(--accent-success-bg) !important; 
+    color: var(--accent-success) !important; 
+    border: 1px solid var(--accent-success) !important;
+}
+.login-error { 
+    background-color: var(--accent-danger-bg) !important; 
+    color: var(--accent-danger) !important; 
+    border: 1px solid var(--accent-danger) !important;
+}
+
 .login-footer-area {
-    margin-top: 25px !important;
+    margin-top: 24px !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
-    gap: 12px !important;
+    gap: 16px !important;
     width: 100% !important;
     box-sizing: border-box !important;
 }
@@ -229,26 +237,34 @@
 .login-footer-divider {
     width: 100% !important;
     border: 0 !important;
-    border-top: 1px solid #e2e8f0 !important;
-    margin: 5px 0 !important;
+    border-top: 1px solid var(--border-primary) !important;
+    margin: 4px 0 !important;
 }
 
-/* כפתור חזרה לדף כניסה */
 .login-center-back-btn {
-    background-color: #f1f5f9 !important;
-    color: #475569 !important;
-    border: 1px solid #cbd5e1 !important;
-    padding: 10px 24px !important;
-    border-radius: 20px !important;
-    font-size: 0.9rem !important;
+    background: transparent !important;
+    border: none !important;
+    color: var(--accent-secondary) !important;
+    font-size: 1rem !important;
     font-weight: 700 !important;
+    text-decoration: none !important;
     cursor: pointer !important;
-    transition: all 0.2s ease !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+    transition: color 0.2s ease !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    min-height: unset !important;
 }
 
 .login-center-back-btn:hover {
-    background-color: #e2e8f0 !important;
-    color: #0f172a !important;
-    transform: translateY(-1px) !important;
+    color: var(--accent-primary) !important;
+    transform: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+@media (max-width: 600px) {
+    .login-main-card {
+        padding: 32px 24px !important;
+    }
 }

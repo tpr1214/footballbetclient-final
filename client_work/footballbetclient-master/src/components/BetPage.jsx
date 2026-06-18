@@ -1,8 +1,10 @@
-import {useEffect, useState} from "react";
-import {useNavigate} from "react-router-dom";
-import {placeBet} from "../service/betApi.js";
-import {getMatches} from "../service/leagueApi.js";
-import {getProfile} from "../service/authApi.js";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { placeBet } from "../service/betApi.js";
+import { getMatches } from "../service/leagueApi.js";
+import { getProfile } from "../service/authApi.js";
+import ThemeToggle from "./ThemeToggle.jsx";
+import "./BetPage.css";
 
 const getErrorMessage = (error, fallback) => {
     const data = error.response?.data;
@@ -40,6 +42,11 @@ function BetPage() {
         }
     }, [user?.id]);
 
+    // פונקציית עזר להזנת סכום מקסימלי מהיר
+    const handleSetMaxAmount = (matchId) => {
+        setAmountByMatch((prev) => ({ ...prev, [matchId]: Math.floor(balance) }));
+    };
+
     const handlePlaceBet = (matchId) => {
         if (!user?.id) {
             setMessage("צריך להתחבר לפני ביצוע הימור.");
@@ -67,7 +74,7 @@ function BetPage() {
         if (homeScoreValue === undefined || homeScoreValue === "" || awayScoreValue === undefined || awayScoreValue === ""
             || !Number.isInteger(predictedHomeScore) || !Number.isInteger(predictedAwayScore)
             || predictedHomeScore < 0 || predictedHomeScore > 3 || predictedAwayScore < 0 || predictedAwayScore > 3) {
-            setMessage("בחר תוצאה מדויקת עד 3 שערים לכל קבוצה.");
+            setMessage("בחר תוצאה מדויקת עד 3 שערים לכל קבוצה (לפי דרישות הליגה).");
             return;
         }
 
@@ -85,75 +92,115 @@ function BetPage() {
             amount
         })
             .then(() => {
-                const updatedUser = {...user, balance: balance - amount};
+                const updatedUser = { ...user, balance: balance - amount };
                 localStorage.setItem("currentUser", JSON.stringify(updatedUser));
                 setBalance((prev) => prev - amount);
-                setMessage("ההימור נשמר בהצלחה.");
-                setAmountByMatch((prev) => ({...prev, [matchId]: ""}));
-                setHomeScoreByMatch((prev) => ({...prev, [matchId]: ""}));
-                setAwayScoreByMatch((prev) => ({...prev, [matchId]: ""}));
+                setMessage("ההימור נשמר בהצלחה במערכת!");
+                setAmountByMatch((prev) => ({ ...prev, [matchId]: "" }));
+                setHomeScoreByMatch((prev) => ({ ...prev, [matchId]: "" }));
+                setAwayScoreByMatch((prev) => ({ ...prev, [matchId]: "" }));
             })
             .catch((error) => {
                 setMessage(getErrorMessage(error, "שמירת ההימור נכשלה."));
             });
     };
 
+    const statusClass = message.includes("בהצלחה") ? "bet-status-message bet-status-success" : "bet-status-message";
+
     return (
-        <div className="page-shell">
-            <h1>עמוד הימורים</h1>
-            <p>ניתן להמר רק על משחקים בסטטוס PENDING, לפני תחילת המחזור.</p>
-            <p className="balance-pill">יתרה זמינה: {balance.toFixed(2)}</p>
+        <div className="bet-clean-page">
+            {/* סרגל ניווט עליון משודרג הכולל מעבר קל בין דפים (דרישת ה-UI של המרצה) */}
+            <div className="bet-nav-bar">
+                <div className="bet-nav-right">
+                    <span className="bet-nav-icon">⚽</span>
+                    <span className="bet-nav-logo-text" onClick={() => navigate("/dashboard")} style={{cursor: 'pointer'}}>FootballBet</span>
+                    <span className="bet-nav-divider">|</span>
+                    <button className="bet-nav-link-btn" onClick={() => navigate("/dashboard")}>דשבורד ראשי</button>
+                    <button className="bet-nav-link-btn active">זירת הימורים</button>
+                    <button className="bet-nav-link-btn" onClick={() => navigate("/my-bets")}>ההימורים שלי</button>
+                    <button className="bet-nav-link-btn" onClick={() => navigate("/profile")}>פרופיל</button>
+                </div>
+                <div className="bet-nav-actions">
+                    {user?.username && (
+                        <div className="bet-nav-user">משתמש מחובר: <strong>{user.username}</strong></div>
+                    )}
+                    <ThemeToggle />
+                </div>
+            </div>
 
-            {message && <p className="status-message">{message}</p>}
+            <div className="bet-content-container">
+                <div className="bet-header-section">
+                    <h1>חלון הימורים פעיל</h1>
+                    <p>ההימורים פתוחים כעת! ברגע שיוזנק המחזור, חלון ההימורים יינעל אוטומטית.</p>
+                    <div className="bet-balance-pill">היתרה שלך: {balance.toFixed(2)} ש"ח</div>
+                </div>
 
-            <div className="grid-list">
-                {matches.map((match) => (
-                    <section className="match-card" key={match.id}>
-                        <h3>{match.homeTeam.name} נגד {match.awayTeam.name}</h3>
-                        <p>מחזור {match.roundNumber}</p>
-                        <p>סטטוס: {match.status}</p>
-                        <OddsPanel match={match}/>
+                {message && <p className={statusClass}>{message}</p>}
 
-                        <p className="field-label">בחר תוצאה מדויקת</p>
+                <div className="bet-grid-list">
+                    {matches.length === 0 ? (
+                        <p className="no-data-text" style={{gridColumn: '1/-1', fontSize: '1.1rem'}}>אין כרגע משחקים זמינים להימור. המחזור החל או שהעונה הסתיימה.</p>
+                    ) : (
+                        matches.map((match) => (
+                            <section className="bet-match-card" key={match.id}>
+                                <h3>{match.homeTeam.name} <span style={{color: '#94a3b8', fontSize: '0.9rem'}}>VS</span> {match.awayTeam.name}</h3>
+                                <p className="bet-match-info">
+                                    ⏱️ מחזור {match.roundNumber} • <span style={{color: '#16a34a', fontWeight: 'bold'}}>🔓 חלון פתוח</span>
+                                </p>
 
-                        <input
-                            type="number"
-                            min="1"
-                            max={balance}
-                            value={amountByMatch[match.id] || ""}
-                            placeholder="סכום"
-                            onChange={(e) => setAmountByMatch((prev) => ({...prev, [match.id]: e.target.value}))}
-                        />
+                                <OddsPanel match={match} />
 
-                        <div className="score-prediction">
-                            <select
-                                value={homeScoreByMatch[match.id] || ""}
-                                placeholder={`${match.homeTeam.name} שערים`}
-                                onChange={(e) => setHomeScoreByMatch((prev) => ({...prev, [match.id]: e.target.value}))}
-                            >
-                                <option value="">בית</option>
-                                {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
-                            </select>
-                            <span>:</span>
-                            <select
-                                value={awayScoreByMatch[match.id] || ""}
-                                placeholder={`${match.awayTeam.name} שערים`}
-                                onChange={(e) => setAwayScoreByMatch((prev) => ({...prev, [match.id]: e.target.value}))}
-                            >
-                                <option value="">חוץ</option>
-                                {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
-                            </select>
-                        </div>
+                                <p className="bet-field-label">סכום הימור בש"ח</p>
+                                <div style={{display: 'flex', gap: '8px', marginBottom: '15px'}}>
+                                    <input
+                                        className="bet-amount-input"
+                                        style={{marginBottom: 0}}
+                                        type="number"
+                                        min="1"
+                                        max={balance}
+                                        value={amountByMatch[match.id] || ""}
+                                        placeholder="0.00"
+                                        onChange={(e) => setAmountByMatch((prev) => ({ ...prev, [match.id]: e.target.value }))}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleSetMaxAmount(match.id)}
+                                        style={{padding: '0 10px', background: '#e2e8f0', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer'}}
+                                    >
+                                        MAX
+                                    </button>
+                                </div>
 
-                        <p className="exact-odds">
-                            יחס לתוצאה שבחרת: {getSelectedExactOdds(match, homeScoreByMatch[match.id], awayScoreByMatch[match.id])}
-                        </p>
+                                <p className="bet-field-label">ניבוי תוצאה מדויקת (מקסימום 3 שערים)</p>
+                                <div className="bet-score-prediction">
+                                    <select
+                                        value={homeScoreByMatch[match.id] || ""}
+                                        onChange={(e) => setHomeScoreByMatch((prev) => ({ ...prev, [match.id]: e.target.value }))}
+                                    >
+                                        <option value="">{match.homeTeam.name}</option>
+                                        {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
+                                    </select>
+                                    <span>:</span>
+                                    <select
+                                        value={awayScoreByMatch[match.id] || ""}
+                                        onChange={(e) => setAwayScoreByMatch((prev) => ({ ...prev, [match.id]: e.target.value }))}
+                                    >
+                                        <option value="">{match.awayTeam.name}</option>
+                                        {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
+                                    </select>
+                                </div>
 
-                        <button onClick={() => handlePlaceBet(match.id)}>
-                            שלח הימור
-                        </button>
-                    </section>
-                ))}
+                                <p className="bet-exact-odds">
+                                    💰 מכפיל רווח משוער: {getSelectedExactOdds(match, homeScoreByMatch[match.id], awayScoreByMatch[match.id])}
+                                </p>
+
+                                <button className="bet-action-btn" onClick={() => handlePlaceBet(match.id)}>
+                                    אישור ושליחת טופס
+                                </button>
+                            </section>
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     );
@@ -161,14 +208,14 @@ function BetPage() {
 
 const SCORE_OPTIONS = [0, 1, 2, 3];
 
-function OddsPanel({match}) {
+function OddsPanel({ match }) {
     const odds = calculateOutcomeOdds(match);
 
     return (
-        <div className="odds-panel">
-            <span>{match.homeTeam.name}: {odds.home}</span>
-            <span>תיקו: {odds.draw}</span>
-            <span>{match.awayTeam.name}: {odds.away}</span>
+        <div className="bet-odds-panel">
+            <span>🏠 {match.homeTeam.name}: <strong>{odds.home}</strong></span>
+            <span>🤝 תיקו: <strong>{odds.draw}</strong></span>
+            <span>🚌 {match.awayTeam.name}: <strong>{odds.away}</strong></span>
         </div>
     );
 }

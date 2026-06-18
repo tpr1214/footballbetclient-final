@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { login } from "../service/authApi.js";
 import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle.jsx";
 import "./Login.css";
 
 function Login() {
@@ -49,7 +50,10 @@ function Login() {
                     <span className="login-nav-subtext">אפליקציית הימורי כדורגל</span>
                 </div>
 
-                <div className="login-nav-user">שלום, אורח 👤</div>
+                <div className="login-nav-actions">
+                    <div className="login-nav-user">שלום, אורח 👤</div>
+                    <ThemeToggle />
+                </div>
             </header>
 
             {/* אזור התוכן המרכזי של המסך */}

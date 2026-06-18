@@ -4,11 +4,9 @@
     left: 0 !important;
     width: 100vw !important;
     height: 100vh !important;
-    background-color: #eef2f5 !important;
-    font-family: 'Segoe UI', system-ui, sans-serif !important;
+    background-color: var(--bg-primary) !important;
     margin: 0 !important;
     padding: 0 !important;
-    box-sizing: border-box !important;
     display: flex !important;
     flex-direction: column !important;
     z-index: 99999 !important;
@@ -17,196 +15,206 @@
 
 .dash-nav-bar {
     width: 100% !important;
-    height: 65px !important;
-    background-color: #1e3a27 !important;
+    height: 70px !important;
+    background-color: var(--navbar-bg) !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    padding: 0 30px !important;
+    padding: 0 32px !important;
     box-sizing: border-box !important;
-    color: #ffffff !important;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1) !important;
+    border-bottom: 1px solid var(--navbar-border) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    box-shadow: var(--shadow-sm) !important;
 }
 
 .dash-nav-right {
     display: flex !important;
     align-items: center !important;
-    gap: 10px !important;
+    gap: 12px !important;
 }
 
-.dash-nav-icon { font-size: 1.3rem !important; }
-.dash-nav-logo-text { color: #a3e635 !important; font-weight: bold !important; font-size: 1.2rem !important; }
-.dash-nav-divider { color: #4d7c0f !important; padding: 0 4px !important; }
-.dash-nav-subtext { font-size: 1rem !important; color: #f1f5f9 !important; }
-.dash-nav-user { font-size: 0.95rem !important; color: #f1f5f9 !important; font-weight: 600 !important; }
+.dash-nav-icon { font-size: 1.5rem !important; }
+.dash-nav-logo-text { color: var(--accent-primary) !important; font-weight: 800 !important; font-size: 1.4rem !important; text-shadow: 0 0 10px var(--accent-primary-glow) !important; }
+.dash-nav-divider { color: var(--border-primary) !important; padding: 0 8px !important; }
+.dash-nav-subtext { font-size: 1rem !important; color: var(--text-secondary) !important; font-weight: 500 !important; }
+.dash-nav-actions { display: flex !important; align-items: center !important; gap: 16px !important; }
+.dash-nav-user { font-size: 0.95rem !important; color: var(--text-secondary) !important; font-weight: 600 !important; }
 
 .dash-main-container {
     flex: 1 !important;
     display: grid !important;
-    grid-template-columns: 290px 1fr 290px !important;
-    gap: 25px !important;
-    padding: 25px !important;
+    grid-template-columns: 320px 1fr 320px !important;
+    gap: 24px !important;
+    padding: 32px !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    height: calc(100vh - 65px) !important;
+    height: calc(100vh - 70px) !important;
     overflow-y: auto !important;
+    max-width: 1600px !important;
+    margin: 0 auto !important;
 }
 
 .dash-side-widget {
-    background: #ffffff !important;
-    border-radius: 14px !important;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04) !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 20px !important;
+    background: var(--bg-surface) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--shadow-md) !important;
+    border: 1px solid var(--glass-border) !important;
+    padding: 24px !important;
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
     height: fit-content !important;
-    max-height: calc(100vh - 120px) !important; /* מונע מהווידג'ט עצמו לחרוג מגובה המסך */
+    max-height: calc(100vh - 120px) !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+    animation: fadeInUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+}
+
+.dash-side-widget:nth-child(3) {
+    animation-delay: 0.2s !important;
 }
 
 .widget-header {
     display: flex !important;
     align-items: center !important;
-    gap: 8px !important;
-    border-bottom: 2px solid #f1f5f9 !important;
-    padding-bottom: 12px !important;
-    margin-bottom: 15px !important;
+    gap: 12px !important;
+    border-bottom: 1px solid var(--border-primary) !important;
+    padding-bottom: 16px !important;
+    margin-bottom: 16px !important;
 }
 
 .widget-header h3 {
     margin: 0 !important;
-    font-size: 1.05rem !important;
-    color: #1e293b !important;
-    font-weight: 700 !important;
+    font-size: 1.15rem !important;
+    color: var(--text-primary) !important;
+    font-weight: 800 !important;
 }
 
-.widget-icon { font-size: 1.2rem !important; }
+.widget-icon { font-size: 1.4rem !important; }
 
-/* 🔥 התיקון המדויק: הרשימה הפנימית מוגבלת בגובה ומקבלת גלילה נעימה */
 .widget-content-list {
     display: flex !important;
     flex-direction: column !important;
     gap: 12px !important;
-    max-height: 60vh !important; /* מגביל את רשימת המשחקים לגובה מושלם */
-    overflow-y: auto !important;   /* פותח גלילה פנימית רק כשיש פריטים רבים */
-    padding-left: 4px !important;  /* מונע מהכרטיסיות להיצמד לפס הגלילה */
-}
-
-/* עיצוב פס גלילה דק, מודרני ונקי בתוך התיבות */
-.widget-content-list::-webkit-scrollbar {
-    width: 5px !important;
-}
-.widget-content-list::-webkit-scrollbar-track {
-    background: transparent !important;
-}
-.widget-content-list::-webkit-scrollbar-thumb {
-    background: #cbd5e1 !important;
-    border-radius: 10px !important;
-}
-.widget-content-list::-webkit-scrollbar-thumb:hover {
-    background: #94a3b8 !important;
+    overflow-y: auto !important;
+    padding-left: 4px !important;
+    flex: 1 !important;
 }
 
 .match-item-card, .bet-item-card {
-    background-color: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    border-radius: 8px !important;
-    padding: 12px !important;
+    background-color: var(--bg-glass) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
     box-sizing: border-box !important;
+    transition: all 0.3s ease !important;
+}
+
+.match-item-card:hover, .bet-item-card:hover {
+    background-color: var(--bg-glass-hover) !important;
+    border-color: var(--accent-primary) !important;
+    transform: translateX(-4px) !important;
 }
 
 .match-teams {
-    font-size: 0.9rem !important;
-    color: #334155 !important;
-    font-weight: 600 !important;
+    font-size: 0.95rem !important;
+    color: var(--text-primary) !important;
+    font-weight: 700 !important;
     text-align: right !important;
 }
 
 .bet-info-wrapper {
     display: flex !important;
     flex-direction: column !important;
-    gap: 2px !important;
+    gap: 4px !important;
     text-align: right !important;
 }
 
-.bet-title { font-size: 0.9rem !important; color: #1e3a27 !important; font-weight: 700 !important; }
-.bet-teams-sub { font-size: 0.75rem !important; color: #64748b !important; }
+.bet-title { font-size: 0.95rem !important; color: var(--accent-primary) !important; font-weight: 800 !important; }
+.bet-teams-sub { font-size: 0.8rem !important; color: var(--text-secondary) !important; font-weight: 500 !important; }
 
-.odds-status-badge { font-size: 0.75rem !important; font-weight: bold !important; padding: 4px 8px !important; border-radius: 6px !important; }
-.odds-status-badge.live { background-color: #ef4444 !important; color: #ffffff !important; animation: dashPulse 1.5s infinite; }
-.odds-status-badge.date { background-color: #e2e8f0 !important; color: #475569 !important; }
+.odds-status-badge { font-size: 0.8rem !important; font-weight: 800 !important; padding: 6px 10px !important; border-radius: 8px !important; }
+.odds-status-badge.live { background-color: var(--accent-danger-bg) !important; color: var(--accent-danger) !important; border: 1px solid var(--accent-danger) !important; animation: pulse-glow 2s infinite !important; }
+.odds-status-badge.date { background-color: var(--bg-input) !important; color: var(--text-muted) !important; border: 1px solid var(--border-primary) !important; }
 
 .bet-odds-badge {
-    background-color: #1e3a27 !important;
-    color: #a3e635 !important;
-    font-weight: 700 !important;
-    font-size: 0.85rem !important;
-    padding: 3px 8px !important;
-    border-radius: 6px !important;
+    background-color: var(--accent-secondary-glow) !important;
+    color: var(--accent-secondary) !important;
+    border: 1px solid var(--accent-secondary) !important;
+    font-weight: 800 !important;
+    font-size: 0.9rem !important;
+    padding: 6px 12px !important;
+    border-radius: 8px !important;
 }
 
 .dash-center-panel {
-    background: #ffffff !important;
-    border-radius: 16px !important;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 35px !important;
+    background: var(--bg-surface) !important;
+    border-radius: 20px !important;
+    box-shadow: var(--shadow-lg) !important;
+    border: 1px solid var(--glass-border) !important;
+    padding: 40px !important;
     display: flex !important;
     flex-direction: column !important;
     box-sizing: border-box !important;
+    backdrop-filter: blur(var(--glass-blur)) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) !important;
+    animation: fadeInUp 0.5s 0.1s cubic-bezier(0.16, 1, 0.3, 1) both !important;
 }
 
-.dash-welcome-title-box { text-align: center !important; margin-bottom: 30px !important; width: 100% !important; }
-.dash-user-greeting { font-size: 1.25rem !important; color: #0f172a !important; font-weight: 700 !important; margin: 0 !important; }
+.dash-welcome-title-box { text-align: center !important; margin-bottom: 40px !important; width: 100% !important; }
+.dash-user-greeting { font-size: 1.5rem !important; color: var(--text-primary) !important; font-weight: 800 !important; margin: 0 !important; letter-spacing: -0.01em !important; }
 
 .dash-actions-grid {
     display: grid !important;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)) !important;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) !important;
     gap: 20px !important;
     width: 100% !important;
     box-sizing: border-box !important;
 }
 
 .action-grid-card {
-    background: #ffffff !important;
-    border: 2px solid #cbd5e1 !important;
-    border-radius: 12px !important;
-    padding: 25px 15px !important;
+    background: var(--bg-glass) !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 16px !important;
+    padding: 32px 20px !important;
     text-align: center !important;
     cursor: pointer !important;
-    transition: all 0.25s ease !important;
+    transition: all 0.3s ease !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    gap: 12px !important;
+    gap: 16px !important;
     box-sizing: border-box !important;
 }
 
 .action-grid-card:hover {
-    border-color: #a3e635 !important;
-    box-shadow: 0 8px 25px rgba(163, 230, 53, 0.15) !important;
-    transform: translateY(-3px) !important;
+    background: var(--bg-glass-hover) !important;
+    border-color: var(--accent-primary) !important;
+    box-shadow: var(--shadow-glow), var(--shadow-md) !important;
+    transform: translateY(-4px) !important;
 }
 
-.action-card-icon { font-size: 2.2rem !important; }
-.action-grid-card h4 { margin: 0 !important; font-size: 1.05rem !important; color: #0f172a !important; font-weight: 700 !important; }
-.action-arrow { font-size: 1rem !important; color: #94a3b8 !important; transition: transform 0.2s ease !important; }
-.action-grid-card:hover .action-arrow { color: #1e3a27 !important; transform: translateX(-4px) !important; }
+.action-card-icon { font-size: 2.5rem !important; transition: transform 0.3s ease !important; }
+.action-grid-card:hover .action-card-icon { transform: scale(1.1) !important; }
+.action-grid-card h4 { margin: 0 !important; font-size: 1.1rem !important; color: var(--text-primary) !important; font-weight: 700 !important; }
+.action-arrow { font-size: 1.2rem !important; color: var(--text-muted) !important; transition: all 0.3s ease !important; }
+.action-grid-card:hover .action-arrow { color: var(--accent-primary) !important; transform: translateX(-6px) !important; }
 
-.no-data-text { font-size: 0.85rem !important; color: #94a3b8 !important; text-align: center !important; margin: 20px 0 !important; font-style: italic !important; }
+.no-data-text { font-size: 0.95rem !important; color: var(--text-muted) !important; text-align: center !important; margin: 24px 0 !important; font-style: italic !important; }
 
-@keyframes dashPulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.6; }
-    100% { opacity: 1; }
+@media (max-width: 1200px) {
+    .dash-main-container { grid-template-columns: 280px 1fr !important; }
+    .dash-side-widget:nth-child(3) { display: none !important; } /* Hide right sidebar on medium screens */
 }
 
-@media (max-width: 1024px) {
-    .dash-main-container { grid-template-columns: 1fr !important; height: auto !important; }
+@media (max-width: 900px) {
+    .dash-main-container { grid-template-columns: 1fr !important; height: auto !important; padding: 20px !important; }
+    .dash-side-widget { max-height: 400px !important; }
+    .dash-side-widget:nth-child(3) { display: flex !important; } /* Show it again stacked */
     .dash-clean-page { position: relative !important; height: auto !important; overflow: visible !important; }
 }
