@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { placeBet } from "../service/betApi.js";
 import { getMatches } from "../service/leagueApi.js";
 import { getProfile } from "../service/authApi.js";
-import ThemeToggle from "./ThemeToggle.jsx";
 import "./BetPage.css";
 
 const getErrorMessage = (error, fallback) => {
@@ -42,7 +41,7 @@ function BetPage() {
         }
     }, [user?.id]);
 
-    // פונקציית עזר להזנת סכום מקסימלי מהיר
+
     const handleSetMaxAmount = (matchId) => {
         setAmountByMatch((prev) => ({ ...prev, [matchId]: Math.floor(balance) }));
     };
@@ -109,25 +108,6 @@ function BetPage() {
 
     return (
         <div className="bet-clean-page">
-            {/* סרגל ניווט עליון משודרג הכולל מעבר קל בין דפים (דרישת ה-UI של המרצה) */}
-            <div className="bet-nav-bar">
-                <div className="bet-nav-right">
-                    <span className="bet-nav-icon">⚽</span>
-                    <span className="bet-nav-logo-text" onClick={() => navigate("/dashboard")} style={{cursor: 'pointer'}}>FootballBet</span>
-                    <span className="bet-nav-divider">|</span>
-                    <button className="bet-nav-link-btn" onClick={() => navigate("/dashboard")}>דשבורד ראשי</button>
-                    <button className="bet-nav-link-btn active">זירת הימורים</button>
-                    <button className="bet-nav-link-btn" onClick={() => navigate("/my-bets")}>ההימורים שלי</button>
-                    <button className="bet-nav-link-btn" onClick={() => navigate("/profile")}>פרופיל</button>
-                </div>
-                <div className="bet-nav-actions">
-                    {user?.username && (
-                        <div className="bet-nav-user">משתמש מחובר: <strong>{user.username}</strong></div>
-                    )}
-                    <ThemeToggle />
-                </div>
-            </div>
-
             <div className="bet-content-container">
                 <div className="bet-header-section">
                     <h1>חלון הימורים פעיל</h1>
@@ -236,25 +216,66 @@ function getSelectedExactOdds(match, homeScoreValue, awayScoreValue) {
     return calculateExactScoreOdds(match, outcome, homeScore, awayScore);
 }
 
+
 function calculateOutcomeOdds(match) {
     const homeSkill = Number(match.homeTeam.skillLevel || 1);
     const awaySkill = Number(match.awayTeam.skillLevel || 1);
     const totalSkill = homeSkill + awaySkill;
 
+    const homeProbability = homeSkill / totalSkill;
+    const awayProbability = awaySkill / totalSkill;
+
+
+    const skillDifference = Math.abs(homeProbability - awayProbability);
+    const drawProbability = 0.33 - (skillDifference * 0.25);
+
+    const remainingProbability = 1 - drawProbability;
+    const finalHomeProb = homeProbability * remainingProbability;
+    const finalAwayProb = awayProbability * remainingProbability;
+
     return {
-        home: roundOdds(1 / (homeSkill / totalSkill)),
-        draw: roundOdds(1 / 0.25),
-        away: roundOdds(1 / (awaySkill / totalSkill))
+        home: roundOdds(1 / finalHomeProb),
+        draw: roundOdds(1 / drawProbability),
+        away: roundOdds(1 / finalAwayProb)
     };
 }
 
+
 function calculateExactScoreOdds(match, outcome, homeScore, awayScore) {
     const outcomeOdds = calculateOutcomeOdds(match);
-    const baseOdds = outcome === "HOME_WIN" ? outcomeOdds.home : outcome === "AWAY_WIN" ? outcomeOdds.away : outcomeOdds.draw;
-    const totalGoals = homeScore + awayScore;
-    const multiplier = 3.0 + (Math.min(totalGoals, 6) * 0.35);
+    const baseOdds = outcome === "HOME_WIN" ? Number(outcomeOdds.home) : outcome === "AWAY_WIN" ? Number(outcomeOdds.away) : Number(outcomeOdds.draw);
 
-    return roundOdds(baseOdds * multiplier);
+    let scoreMultiplier = 2.0;
+
+    if (outcome === "DRAW") {
+        if (homeScore === 0) scoreMultiplier *= 1.2;
+        if (homeScore === 1) scoreMultiplier *= 0.9;
+        if (homeScore === 2) scoreMultiplier *= 2.5;
+        if (homeScore === 3) scoreMultiplier *= 6.0;
+    } else {
+        const homeSkill = Number(match.homeTeam.skillLevel || 1);
+        const awaySkill = Number(match.awayTeam.skillLevel || 1);
+        const isHomeFavorite = homeSkill >= awaySkill;
+        const goalDifference = Math.abs(homeScore - awayScore);
+        const totalGoals = homeScore + awayScore;
+
+
+        if ((outcome === "HOME_WIN" && isHomeFavorite) || (outcome === "AWAY_WIN" && !isHomeFavorite)) {
+            if (goalDifference === 1) scoreMultiplier *= 1.1;
+            if (goalDifference === 2) scoreMultiplier *= 1.6;
+            if (goalDifference === 3) scoreMultiplier *= 3.5;
+        } else {
+
+            scoreMultiplier *= (1.8 + goalDifference);
+        }
+        
+
+        if (totalGoals >= 4) {
+             scoreMultiplier *= 1.5;
+        }
+    }
+
+    return roundOdds(baseOdds * scoreMultiplier);
 }
 
 function roundOdds(value) {

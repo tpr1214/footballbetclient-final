@@ -1,27 +1,13 @@
 .bet-clean-page {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background-color: var(--bg-primary) !important;
+    position: relative !important;
+    min-height: calc(100vh - 60px) !important;
+    width: 100% !important;
+    background: transparent !important;
     margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    z-index: 99999 !important;
-    overflow: hidden !important;
-}
-
-.bet-clean-page::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: var(--pattern-pitch), var(--pattern-hex);
-    background-size: 100% 100%, 40px 40px;
-    opacity: 0.8;
-    pointer-events: none;
-    z-index: -1;
+    overflow: auto !important;
 }
 
 .bet-nav-bar {
@@ -111,7 +97,7 @@
     padding: 32px !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    height: calc(100vh - 70px) !important;
+    min-height: calc(100vh - 130px) !important;
     overflow-y: auto !important;
     align-items: center !important;
 }
@@ -227,7 +213,12 @@
     font-size: 0.9rem !important;
     color: var(--text-primary) !important;
     font-weight: 700 !important;
-    white-space: nowrap !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 4px !important;
 }
 
 .bet-odds-panel strong {
@@ -297,6 +288,11 @@
     box-shadow: 0 0 0 3px var(--accent-primary-glow) !important;
 }
 
+.bet-score-prediction select option {
+    background-color: var(--bg-surface-solid) !important;
+    color: var(--text-primary) !important;
+}
+
 .bet-score-prediction span {
     font-weight: 900 !important;
     color: var(--accent-primary) !important;
@@ -331,7 +327,11 @@
     box-shadow: var(--shadow-glow), var(--shadow-md) !important;
     transition: all 0.3s ease !important;
     box-sizing: border-box !important;
-    min-height: unset !important;
+    min-height: 56px !important;
+    height: auto !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+    word-wrap: break-word !important;
     margin: 0 !important;
 }
 

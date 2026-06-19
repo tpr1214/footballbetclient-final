@@ -1,11 +1,12 @@
 /* מיכל הלחצן - ממוקם קבוע מתחת ל-NavBar */
 .back-button-container {
-    position: fixed !important;
-    top: 85px !important;
-    right: 32px !important;
-    z-index: 9999 !important;
+    padding: 24px 24px 0 24px !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
     direction: rtl !important;
     animation: fadeInUp 0.4s ease both !important;
+    display: flex !important;
+    justify-content: flex-start !important;
 }
 
 /* עיצוב הלחצן עצמו */

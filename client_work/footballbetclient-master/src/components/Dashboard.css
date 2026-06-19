@@ -1,28 +1,16 @@
 .dash-clean-page {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background-color: var(--bg-primary) !important;
+    position: relative !important;
+    min-height: calc(100vh - 60px) !important;
+    width: 100% !important;
+    background: transparent !important;
     margin: 0 !important;
     padding: 0 !important;
     display: flex !important;
     flex-direction: column !important;
-    z-index: 99999 !important;
-    overflow: hidden !important;
+    overflow: auto !important;
 }
 
-.dash-clean-page::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: var(--pattern-pitch), var(--pattern-hex);
-    background-size: 100% 100%, 40px 40px;
-    opacity: 0.8;
-    pointer-events: none;
-    z-index: -1;
-}
+
 
 .dash-nav-bar {
     width: 100% !important;
@@ -60,7 +48,7 @@
     padding: 32px !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    height: calc(100vh - 70px) !important;
+    min-height: calc(100vh - 130px) !important;
     overflow-y: auto !important;
     max-width: 1600px !important;
     margin: 0 auto !important;

@@ -6,125 +6,182 @@
 :root,
 [data-theme="dark"] {
   /* Backgrounds */
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #111827;
-  --bg-surface: rgba(17, 24, 39, 0.7);
-  --bg-surface-solid: #1a2235;
-  --bg-glass: rgba(255, 255, 255, 0.04);
-  --bg-glass-hover: rgba(255, 255, 255, 0.08);
-  --bg-input: rgba(255, 255, 255, 0.06);
-  --bg-input-focus: rgba(255, 255, 255, 0.1);
-  --bg-navbar: rgba(10, 14, 26, 0.85);
-  --bg-card-gradient: linear-gradient(135deg, rgba(16, 185, 129, 0.08), rgba(245, 158, 11, 0.06));
+  --bg-primary: #141e2b;
+  --bg-secondary: #0d1622;
+  --bg-surface: #101823;
+  --bg-surface-solid: #111b27;
+  --bg-glass: rgba(20, 30, 43, 0.75);
+  --bg-glass-hover: rgba(6, 182, 212, 0.15);
+  --bg-input: rgba(6, 182, 212, 0.05);
+  --bg-input-focus: rgba(6, 182, 212, 0.12);
+  --bg-navbar: rgba(13, 22, 34, 0.95);
+  --bg-card-gradient: linear-gradient(135deg, rgba(6, 182, 212, 0.08), rgba(234, 179, 8, 0.05));
 
-  /* Patterns (Sports) */
-  --pattern-pitch: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(255,255,255,0.01) 40px, rgba(255,255,255,0.01) 80px);
-  --pattern-hex: radial-gradient(circle at center, rgba(16,185,129,0.03) 0%, transparent 70%);
+  /* Universal page background — used on body */
+  --page-bg: #141e2b;
+  --page-bg-gradient: radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.18) 0%, transparent 45%),
+                      radial-gradient(circle at 90% 15%, rgba(6, 182, 212, 0.15) 0%, transparent 45%),
+                      radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+                      radial-gradient(circle at 30% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
+                      radial-gradient(circle at 80% 85%, rgba(6, 182, 212, 0.15) 0%, transparent 45%),
+                      linear-gradient(160deg, #0f1822 0%, #141e2b 40%, #0d141e 70%, #0f1822 100%);
+  --page-bg-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 45px 45px, 45px 45px;
+  --page-bg-image: radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.18) 0%, transparent 45%),
+                   radial-gradient(circle at 90% 15%, rgba(6, 182, 212, 0.15) 0%, transparent 45%),
+                   radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.1) 0%, transparent 60%),
+                   radial-gradient(circle at 30% 80%, rgba(6, 182, 212, 0.12) 0%, transparent 40%),
+                   radial-gradient(circle at 80% 85%, rgba(6, 182, 212, 0.15) 0%, transparent 45%),
+                   linear-gradient(rgba(6, 182, 212, 0.04) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
+
+  /* Patterns (Tech grid) */
+  --pattern-pitch: linear-gradient(rgba(6, 182, 212, 0.04) 1px, transparent 1px),
+                   linear-gradient(90deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px);
+  --pattern-hex: none;
 
   /* Text */
-  --text-primary: #f1f5f9;
-  --text-secondary: #94a3b8;
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
   --text-muted: #64748b;
   --text-inverse: #0f172a;
 
   /* Borders */
-  --border-primary: rgba(255, 255, 255, 0.08);
-  --border-subtle: rgba(255, 255, 255, 0.04);
-  --border-accent: rgba(16, 185, 129, 0.3);
+  --border-primary: rgba(6, 182, 212, 0.25);
+  --border-subtle: rgba(6, 182, 212, 0.15);
+  --border-accent: rgba(6, 182, 212, 0.45);
 
   /* Accents */
-  --accent-primary: #10b981;
-  --accent-primary-hover: #059669;
-  --accent-primary-glow: rgba(16, 185, 129, 0.25);
-  --accent-secondary: #f59e0b;
-  --accent-secondary-glow: rgba(245, 158, 11, 0.2);
+  --accent-primary: #06b6d4;          /* Cyan/teal */
+  --accent-primary-hover: #0891b2;
+  --accent-primary-glow: rgba(6, 182, 212, 0.4);
+  --accent-secondary: #eab308;        /* Gold/yellow */
+  --accent-secondary-glow: rgba(234, 179, 8, 0.2);
+  --accent-cyan: #06b6d4;
+  --accent-cyan-glow: rgba(6, 182, 212, 0.2);
   --accent-danger: #ef4444;
   --accent-danger-bg: rgba(239, 68, 68, 0.12);
   --accent-success: #22c55e;
   --accent-success-bg: rgba(34, 197, 94, 0.12);
 
-  /* Shadows */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.15);
+  /* Shadows and Glowing borders */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.7);
+  --shadow-glow: 0 0 15px rgba(6, 182, 212, 0.35);
+  --shadow-cyan-glow: 0 0 15px rgba(6, 182, 212, 0.35);
 
   /* Navbar */
-  --navbar-bg: rgba(10, 14, 26, 0.92);
-  --navbar-border: rgba(255, 255, 255, 0.06);
+  --navbar-bg: rgba(13, 22, 34, 0.95);
+  --navbar-border: rgba(6, 182, 212, 0.25);
 
   /* Glass */
-  --glass-blur: 16px;
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: 20px;
+  --glass-bg: rgba(20, 30, 43, 0.75);
+  --glass-border: rgba(6, 182, 212, 0.25);
 
   /* Misc */
-  --scrollbar-track: rgba(255, 255, 255, 0.02);
-  --scrollbar-thumb: rgba(255, 255, 255, 0.1);
-  --scrollbar-thumb-hover: rgba(255, 255, 255, 0.2);
+  --scrollbar-track: rgba(13, 22, 34, 0.05);
+  --scrollbar-thumb: rgba(6, 182, 212, 0.2);
+  --scrollbar-thumb-hover: rgba(6, 182, 212, 0.5);
 
   /* Hero gradient */
-  --hero-gradient: linear-gradient(135deg, #0a0e1a 0%, #111827 40%, #0f2a1e 70%, #0a0e1a 100%);
+  --hero-gradient: var(--page-bg-gradient);
+
+  --font-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Oswald', 'Inter', system-ui, sans-serif;
 
   color-scheme: dark;
+
+  /* Custom Enforced Design System Properties */
+  --header-color: #eab308;
+  --header-shadow: 0 0 10px rgba(234, 179, 8, 0.45);
 }
 
 /* ── Light Theme ─────────────────────────────────────────────── */
 [data-theme="light"] {
-  --bg-primary: #f0f4f8;
+  /* Backgrounds */
+  --bg-primary: #eef2f7;
   --bg-secondary: #ffffff;
-  --bg-surface: rgba(255, 255, 255, 0.8);
+  --bg-surface: rgba(255, 255, 255, 0.85);
   --bg-surface-solid: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.6);
-  --bg-glass-hover: rgba(255, 255, 255, 0.8);
-  --bg-input: #f8fafc;
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  --bg-glass-hover: rgba(255, 255, 255, 0.9);
+  --bg-input: #f1f5f9;
   --bg-input-focus: #ffffff;
-  --bg-navbar: rgba(255, 255, 255, 0.9);
+  --bg-navbar: rgba(255, 255, 255, 0.92);
   --bg-card-gradient: linear-gradient(135deg, rgba(5, 150, 105, 0.05), rgba(217, 119, 6, 0.04));
 
-  /* Patterns (Sports) */
-  --pattern-pitch: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(0,0,0,0.015) 40px, rgba(0,0,0,0.015) 80px);
-  --pattern-hex: radial-gradient(circle at center, rgba(5,150,105,0.03) 0%, transparent 70%);
+  /* Universal page background — used on body */
+  --page-bg: #eef2f7;
+  --page-bg-gradient: radial-gradient(ellipse 120% 80% at 20% -10%, rgba(16,185,129,0.06) 0%, transparent 55%),
+                      radial-gradient(ellipse 100% 70% at 80% 110%, rgba(14,165,233,0.05) 0%, transparent 55%),
+                      linear-gradient(160deg, #eef2f7 0%, #e8f4f0 40%, #f0f7ff 70%, #eef2f7 100%);
+  --page-bg-size: 100% 100%;
+  --page-bg-image: radial-gradient(ellipse 120% 80% at 20% -10%, rgba(16,185,129,0.06) 0%, transparent 55%),
+                   radial-gradient(ellipse 100% 70% at 80% 110%, rgba(14,165,233,0.05) 0%, transparent 55%),
+                   linear-gradient(160deg, #eef2f7 0%, #e8f4f0 40%, #f0f7ff 70%, #eef2f7 100%);
 
+  /* Patterns */
+  --pattern-pitch: repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(0,0,0,0.012) 40px, rgba(0,0,0,0.012) 80px),
+                   repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.008) 40px, rgba(0,0,0,0.008) 80px);
+  --pattern-hex: none;
+
+  /* Text */
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
   --text-inverse: #f1f5f9;
 
+  /* Borders */
   --border-primary: rgba(0, 0, 0, 0.08);
   --border-subtle: rgba(0, 0, 0, 0.04);
   --border-accent: rgba(16, 185, 129, 0.25);
 
-  --accent-primary: #059669;
+  /* Accents */
+  --accent-primary: #059669;          /* Emerald/green */
   --accent-primary-hover: #047857;
-  --accent-primary-glow: rgba(5, 150, 105, 0.15);
-  --accent-secondary: #d97706;
-  --accent-secondary-glow: rgba(217, 119, 6, 0.12);
+  --accent-primary-glow: rgba(5, 150, 105, 0.2);
+  --accent-secondary: #d97706;        /* Amber/gold */
+  --accent-secondary-glow: rgba(217, 119, 6, 0.15);
+  --accent-cyan: #0891b2;
+  --accent-cyan-glow: rgba(8, 145, 178, 0.15);
   --accent-danger: #dc2626;
   --accent-danger-bg: rgba(220, 38, 38, 0.08);
   --accent-success: #16a34a;
   --accent-success-bg: rgba(22, 163, 74, 0.08);
 
+  /* Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.12);
-  --shadow-glow: 0 0 20px rgba(5, 150, 105, 0.1);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.1);
+  --shadow-glow: 0 0 12px rgba(5, 150, 105, 0.15);
+  --shadow-cyan-glow: 0 0 12px rgba(5, 150, 105, 0.15);
 
+  /* Navbar */
   --navbar-bg: rgba(255, 255, 255, 0.92);
   --navbar-border: rgba(0, 0, 0, 0.06);
 
-  --glass-blur: 16px;
-  --glass-bg: rgba(255, 255, 255, 0.5);
-  --glass-border: rgba(0, 0, 0, 0.06);
+  /* Glass */
+  --glass-blur: 20px;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.07);
 
+  /* Misc */
   --scrollbar-track: rgba(0, 0, 0, 0.02);
-  --scrollbar-thumb: rgba(0, 0, 0, 0.1);
-  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.2);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+  --scrollbar-thumb-hover: rgba(5, 150, 105, 0.3);
 
-  --hero-gradient: linear-gradient(135deg, #f0f4f8 0%, #e8f5e9 40%, #fff8e1 70%, #f0f4f8 100%);
+  /* Hero gradient */
+  --hero-gradient: var(--page-bg-gradient);
 
   --font-base: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Oswald', 'Inter', system-ui, sans-serif;
+
+  color-scheme: light;
+
+  /* Custom Enforced Design System Properties */
+  --header-color: #059669; /* Emerald/green */
+  --header-shadow: none;
 }
 
 /* ── Base Reset & Typography ─────────────────────────────────── */
@@ -142,10 +199,12 @@ html {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   scroll-behavior: smooth;
+  background: #0c1220; /* prevent white flash before theme loads */
 }
 
 body {
-  background: var(--bg-primary);
+  background: var(--page-bg-gradient, var(--bg-primary));
+  background-attachment: fixed;
   color: var(--text-primary);
   direction: rtl;
   min-height: 100vh;
@@ -154,6 +213,7 @@ body {
 
 #root {
   min-height: 100vh;
+  background: transparent;
 }
 
 /* ── Selection ───────────────────────────────────────────────── */
@@ -244,4 +304,86 @@ a:hover {
 @media (max-width: 1024px) {
   html { font-size: 15px; }
   h1 { font-size: 1.6rem; }
+}
+
+/* ── Enforced Glowing Card Aesthetic (Image 3 Mockup) ── */
+.match-card,
+.match-window,
+.bet-match-card,
+.bet-card-premium,
+.dash-side-widget,
+.dash-center-panel,
+.action-grid-card,
+.profile-panel,
+form,
+.login-container,
+.register-container {
+  background: var(--bg-surface-solid) !important;
+  border: 1.5px solid var(--border-accent) !important;
+  box-shadow: var(--shadow-glow), inset 0 0 8px rgba(6, 182, 212, 0.15) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.match-card:hover,
+.match-window:hover,
+.bet-match-card:hover,
+.bet-card-premium:hover,
+.dash-side-widget:hover,
+.dash-center-panel:hover,
+.action-grid-card:hover,
+.profile-panel:hover,
+form:hover,
+.login-container:hover,
+.register-container:hover {
+  box-shadow: var(--shadow-lg), inset 0 0 15px rgba(6, 182, 212, 0.25) !important;
+  border-color: var(--accent-primary-hover) !important;
+  transform: translateY(-4px) !important;
+}
+
+/* ── Typography & Gold/Bronze Accents ── */
+h1, h2, h3, h4,
+.bet-header-section h1,
+.dash-user-greeting,
+.personal-bets-header h1,
+.widget-header h3,
+.main-hero-card h1 {
+  color: var(--header-color) !important;
+  text-shadow: var(--header-shadow) !important;
+}
+
+/* Ensure key details (like Odds/score) are Gold */
+.odds-panel span,
+.exact-odds,
+.bet-odds-panel strong,
+.bet-exact-odds,
+.bet-odds-badge,
+.scoreboard strong,
+.team-score,
+.score-line,
+.earnings-pill,
+.bet-potential {
+  color: var(--accent-secondary) !important;
+  border-color: var(--border-accent) !important;
+}
+
+.odds-panel span:hover,
+.exact-odds:hover {
+  background: var(--accent-secondary) !important;
+  color: var(--bg-primary) !important;
+  box-shadow: var(--shadow-cyan-glow) !important;
+}
+
+/* Force body styling */
+html, body, #root {
+  background-color: var(--page-bg) !important;
+  background-image: var(--page-bg-image) !important;
+  background-size: var(--page-bg-size) !important;
+  background-attachment: fixed !important;
+  color: var(--text-primary) !important;
+}
+
+/* Maintain white color for h1 in profile hero for optimal contrast */
+body .profile-hero h1 {
+  color: #ffffff !important;
+  text-shadow: none !important;
 }

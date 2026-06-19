@@ -209,7 +209,11 @@
     margin-top: 8px !important;
     transition: all 0.3s ease !important;
     box-sizing: border-box !important;
-    min-height: unset !important;
+    min-height: 56px !important;
+    height: auto !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+    word-wrap: break-word !important;
 }
 
 .login-action-btn:hover:not(:disabled) {

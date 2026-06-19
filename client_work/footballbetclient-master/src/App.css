@@ -117,14 +117,15 @@ nav {
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* ── Page Shell ──────────────────────────────────────────────── */
+/* ── Page Shell ────────────────────────────────────────────────── */
 main,
 .page-shell {
   padding: 28px;
   animation: fadeInUp 0.5s ease both;
-  background-image: var(--pattern-pitch), var(--pattern-hex);
+  background: transparent;
+  /* subtle grid texture that adapts to the body gradient */
+  background-image: var(--pattern-pitch);
   background-attachment: fixed;
-  background-size: 100% 100%, 40px 40px;
 }
 
 .page-shell {
@@ -588,10 +589,10 @@ tbody tr:hover {
   align-items: center;
   gap: 20px;
   padding: 32px;
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-primary-hover));
+  background-color: var(--accent-primary);
+  background-image: linear-gradient(135deg, rgba(22, 163, 74, 0.9), rgba(21, 128, 61, 0.9)), var(--pattern-hex);
   color: #ffffff;
-  background-image: var(--pattern-hex);
-  background-size: 30px 30px;
+  background-size: cover, 30px 30px;
 }
 
 .profile-hero h1,
