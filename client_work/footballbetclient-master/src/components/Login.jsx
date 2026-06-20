@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { login } from "../service/authApi.js";
 import { useNavigate } from "react-router-dom";
+import ThemeToggle from "./ThemeToggle.jsx";
 import "./Login.css";
 
 function Login() {
@@ -10,6 +11,7 @@ function Login() {
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = (e) => {
         e.preventDefault();
@@ -40,16 +42,19 @@ function Login() {
 
     return (
         <div className="login-clean-page" dir="rtl">
-            {/* בר עליון מקצועי ונקי – ללא כפתור החזרה הישן */}
+
             <header className="login-nav-bar">
                 <div className="login-nav-right">
                     <span className="login-nav-icon">⚽</span>
-                    <span className="login-nav-logo-text">פוטבול-בט</span>
+                    <span className="login-nav-logo-text" style={{cursor: 'pointer'}} onClick={() => navigate("/")}>FootballBet</span>
                     <span className="login-nav-divider">|</span>
                     <span className="login-nav-subtext">אפליקציית הימורי כדורגל</span>
                 </div>
 
-                <div className="login-nav-user">שלום, אורח 👤</div>
+                <div className="login-nav-actions">
+                    <div className="login-nav-user">שלום, אורח 👤</div>
+                    <ThemeToggle />
+                </div>
             </header>
 
             {/* אזור התוכן המרכזי של המסך */}
@@ -75,13 +80,22 @@ function Login() {
 
                             <div className="login-field-group">
                                 <label>סיסמה</label>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    placeholder="••••••••"
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    required
-                                />
+                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        placeholder="••••••••"
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        required
+                                        style={{ width: '100%', paddingLeft: '40px' }}
+                                    />
+                                    <span 
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        style={{ position: 'absolute', left: '12px', cursor: 'pointer', fontSize: '1.2rem', userSelect: 'none' }}
+                                    >
+                                        {showPassword ? "🙈" : "👁️"}
+                                    </span>
+                                </div>
                             </div>
 
                             <button type="submit" className="login-action-btn">
@@ -95,7 +109,7 @@ function Login() {
                             </p>
                         )}
 
-                        {/* תחתית הכרטיס: הרשמה וכפתור חזרה ממורכזים פה */}
+                        {/*  הרשמה וכפתור חזרה ממורכזים פה */}
                         <div className="login-footer-area">
                             <button className="login-link-register-btn" onClick={() => navigate("/register")}>
                                 הרשמה למשתמש חדש ✨

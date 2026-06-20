@@ -11,7 +11,8 @@ function MyGames() {
     }, []);
 
     return (
-        <div className="page-shell">
+        <div className="dash-clean-page" dir="rtl">
+            <div className="dash-main-container">
             <h1>המשחקים העתידיים שלי</h1>
             <div className="grid-list">
                 {matches.map((match) => (
@@ -20,6 +21,7 @@ function MyGames() {
                         <p>מחזור {match.roundNumber}</p>
                     </section>
                 ))}
+            </div>
             </div>
         </div>
     );

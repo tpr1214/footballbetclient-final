@@ -62,7 +62,16 @@ const [userId, setUserId] = useState(null);
             <div className="profile-panel">
                 <div className="profile-hero">
                     <div className="profile-avatar">
-                        {profileImageUrl ? <img src={profileImageUrl} alt="Profile"/> : getInitials(username || email)}
+                        {profileImageUrl ? (
+                            <img 
+                                src={profileImageUrl} 
+                                alt="Profile"
+                                onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
+                            />
+                        ) : null}
+                        <div style={{ display: profileImageUrl ? 'none' : 'flex', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
+                            {getInitials(username || email)}
+                        </div>
                     </div>
                     <div>
                         <h1>הפרופיל שלי</h1>
@@ -111,7 +120,7 @@ const [userId, setUserId] = useState(null);
                         placeholder="קישור לתמונת פרופיל"
                         onChange={(event) => setProfileImageUrl(event.target.value)}
                     />
-                    <button type="submit" disabled={isSaving}>
+                    <button type="submit" className="save-btn" disabled={isSaving}>
                         {isSaving ? "שומר..." : "שמור פרופיל"}
                     </button>
                 </form>

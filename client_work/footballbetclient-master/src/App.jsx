@@ -10,12 +10,14 @@ import LiveMatchDashboard from "./pages/LiveMatchDashboard.jsx";
 import PersonalBetsDashboard from "./pages/PersonalBetsDashboard.jsx";
 import Profile from "./pages/Profile.jsx";
 import BackButton from "./components/BackButton.jsx";
+import Navbar from "./components/Navbar.jsx";
 
 
 
 function App() {
     return (
         <BrowserRouter>
+            <Navbar/>
             <BackButton/>
             <Routes>
                 <Route path="/" element={<MainPage/>}/>

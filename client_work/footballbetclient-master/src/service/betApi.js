@@ -7,3 +7,7 @@ export const placeBet = (data) => {
 export const getUserBets = (userId) => {
     return api.get(`/bets/user/${userId}`);
 };
+
+export const getUserPendingBets = (userId) => {
+    return api.get(`/bets/user/${userId}/pending`);
+};

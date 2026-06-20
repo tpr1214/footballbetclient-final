@@ -1,0 +1,36 @@
+/* ── Theme Toggle Button ─────────────────────────────────────── */
+.theme-toggle-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 1px solid var(--border-primary) !important;
+    border-radius: 50% !important;
+    background: var(--bg-glass) !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-shadow: none !important;
+    min-height: unset !important;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--bg-glass-hover) !important;
+    border-color: var(--accent-primary) !important;
+    box-shadow: 0 0 16px var(--accent-primary-glow) !important;
+    transform: rotate(15deg) !important;
+}
+
+.theme-toggle-icon {
+    font-size: 1.15rem;
+    line-height: 1;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover .theme-toggle-icon {
+    transform: scale(1.15);
+}

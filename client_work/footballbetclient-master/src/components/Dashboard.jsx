@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
+import { getUserPendingBets } from "../service/betApi.js";
 import api from "../service/api.js";
 import "./Dashboard.css";
 
 function Dashboard() {
     const navigate = useNavigate();
-    const user = JSON.parse(localStorage.getItem("currentUser") || "null");
+    const [user] = useState(() => JSON.parse(localStorage.getItem("currentUser") || "null"));
 
-    // נתוני הגיבוי ההתחלתיים של המשחקים כדי שלא נצטרך setState סינכרוני
+
     const [matches, setMatches] = useState([
         { id: 1, homeTeam: "ברצלונה", awayTeam: "ריאל מדריד", matchTime: "LIVE", isLive: true },
         { id: 2, homeTeam: "מנצ'סטר סיטי", awayTeam: "ליברפול", matchTime: "מחר, 22:00", isLive: false },
@@ -16,11 +17,11 @@ function Dashboard() {
     const [openBets, setOpenBets] = useState([]);
     const [loadingBets, setLoadingBets] = useState(true);
 
-    // פונקציית משיכת נתונים קבועה ועטופה בזמן אמת - מקושרת לנתיב הליגה החדש
+
     const fetchDashboardData = useCallback(async () => {
         if (user && user.id) {
             try {
-                const response = await api.get(`/bets/user/${user.id}`);
+                const response = await getUserPendingBets(user.id);
                 setOpenBets(response.data);
             } catch (err) {
                 console.error("שגיאה בקבלת ההימורים מהשרת:", err);
@@ -28,22 +29,22 @@ function Dashboard() {
         }
 
         try {
-            // התאמה ל- LeagueController הקיים בשרת
+
             const response = await api.get("/league/matches/upcoming");
             setMatches(response.data);
         } catch {
             console.warn("נתיב משחקים לא נמצא בשרת, מציג נתונים חמים דינמיים בלקוח.");
         }
-    }, [user]);
+    }, [user?.id]);
 
-    // ריצה ראשונית וניהול אסינכרוני נקי ללא שגיאות ESLint
+
     useEffect(() => {
         let isMounted = true;
 
         const loadInitialData = async () => {
             if (user && user.id) {
                 try {
-                    const response = await api.get(`/bets/user/${user.id}`);
+                    const response = await getUserPendingBets(user.id);
                     if (isMounted) setOpenBets(response.data);
                 } catch (err) {
                     console.error("שגיאה בטעינה ראשונית של הימורים:", err);
@@ -51,20 +52,20 @@ function Dashboard() {
             }
 
             try {
-                // התאמה ל- LeagueController הקיים בשרת בטעינה הראשונית
+
                 const response = await api.get("/league/matches/upcoming");
                 if (isMounted) setMatches(response.data);
             } catch {
-                // שרת לא זמין - נשארים עם נתוני הגיבוי המוגדרים ב-useState
+
             }
 
             if (isMounted) setLoadingBets(false);
         };
 
-        // הפעלה אסינכרונית מבודדת
+
         loadInitialData();
 
-        // הגדרת מנגנון העדכון בזמן אמת בנפרד (כל 10 שניות)
+
         const interval = setInterval(() => {
             fetchDashboardData();
         }, 10000);
@@ -73,7 +74,7 @@ function Dashboard() {
             isMounted = false;
             clearInterval(interval);
         };
-    }, [user, fetchDashboardData]);
+    }, [user?.id, fetchDashboardData]);
 
     const translateOutcome = (outcome) => {
         if (outcome === "HOME_WIN") return "ניצחון בית";
@@ -84,20 +85,8 @@ function Dashboard() {
 
     return (
         <div className="dash-clean-page" dir="rtl">
-            <header className="dash-nav-bar">
-                <div className="dash-nav-right">
-                    <span className="dash-nav-icon">⚽</span>
-                    <span className="dash-nav-logo-text">פוטבול-בט</span>
-                    <span className="dash-nav-divider">|</span>
-                    <span className="dash-nav-subtext">אפליקציית הימורי כדורגל</span>
-                </div>
-                <div className="dash-nav-user">
-                    {user ? `שלום, ${user.username || user.email} 👤` : "שלום, אורח 👤"}
-                </div>
-            </header>
-
             <div className="dash-main-container">
-                {/* עמודה ימנית: משחקים חמים בקרוב */}
+                {/* משחקים חמים בקרוב */}
                 <aside className="dash-side-widget">
                     <div className="widget-header">
                         <span className="widget-icon">⏰</span>
@@ -119,7 +108,7 @@ function Dashboard() {
                     </div>
                 </aside>
 
-                {/* עמודה מרכזית: פאנל כפתורים ופעולות */}
+                {/*  פאנל כפתורים ופעולות */}
                 <main className="dash-center-panel">
                     <div className="dash-welcome-title-box">
                         <p className="dash-user-greeting">
@@ -135,7 +124,7 @@ function Dashboard() {
                         </div>
                         <div className="action-grid-card" onClick={() => navigate("/live")}>
                             <div className="action-card-icon">🏟️</div>
-                            <h4>דשבורד משחקים חיים</h4>
+                            <h4>משחקים בזמן אמת </h4>
                             <span className="action-arrow">←</span>
                         </div>
                         <div className="action-grid-card" onClick={() => navigate("/my-bets")}>
@@ -148,15 +137,11 @@ function Dashboard() {
                             <h4>המשחקים העתידיים</h4>
                             <span className="action-arrow">←</span>
                         </div>
-                        <div className="action-grid-card" onClick={() => navigate("/profile")}>
-                            <div className="action-card-icon">👤</div>
-                            <h4>פרופיל אישי</h4>
-                            <span className="action-arrow">←</span>
-                        </div>
+
                     </div>
                 </main>
 
-                {/* עמודה שמאלית: הימורים פתוחים שלי */}
+
                 <aside className="dash-side-widget">
                     <div className="widget-header">
                         <span className="widget-icon">🏆</span>
@@ -166,7 +151,7 @@ function Dashboard() {
                         {!user ? (
                             <p className="no-data-text">התחברי כדי לראות את ההימורים שלך</p>
                         ) : loadingBets ? (
-                            <p className="no-data-text">טוען נתונים מה-DB...</p>
+                            <p className="no-data-text">טוען נתונים...</p>
                         ) : openBets.length === 0 ? (
                             <p className="no-data-text">אין לך הימורים פתוחים כרגע</p>
                         ) : (

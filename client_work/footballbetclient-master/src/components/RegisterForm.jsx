@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { register } from "../service/authApi.js";
 import { useNavigate } from "react-router-dom";
-import "./RegisterForm.css"; // ייבוא קובץ ה-CSS החדש
+import ThemeToggle from "./ThemeToggle.jsx";
+import "./RegisterForm.css";
 
 function RegisterForm() {
     const navigate = useNavigate();
@@ -10,6 +11,7 @@ function RegisterForm() {
     const [email, setEmail] = useState("");
     const [message, setMessage] = useState("");
     const [isSuccess, setIsSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const usernameRegex = (value) => {
         const checkUserName = /^[A-Za-z0-9]+$/;
@@ -62,24 +64,26 @@ function RegisterForm() {
 
     return (
         <div className="login-clean-page">
-            {/* סרגל ניווט עליון זהה לזה של דף ההתחברות */}
+
             <nav className="login-nav-bar">
                 <div className="login-nav-right">
-                    <span className="login-nav-logo-text">פוטבול-בט</span>
-                    <span className="login-nav-divider">-</span>
-                    <span className="login-nav-subtext">אפליקציית הימורי כדורגל</span>
+                    <span className="login-nav-icon">⚽</span>
+                    <span className="login-nav-logo-text" style={{cursor: 'pointer'}} onClick={() => navigate("/")}>FootballBet</span>
                 </div>
-                <div className="login-nav-user">שלום, אורח</div>
+                <div className="login-nav-actions">
+                    <div className="login-nav-user">שלום, אורח</div>
+                    <ThemeToggle />
+                </div>
             </nav>
 
             <div className="login-content-container">
-                {/* תגית ברוכים הבאים עליונה */}
-                <div className="login-welcome-badge">ברוכים הבאים להרשמה!</div>
 
-                {/* הכרטיס המרכזי */}
+                <div className="login-welcome-badge">ברוכים הבאים למערכת</div>
+
+
                 <div className="login-main-card">
                     <div className="login-card-content">
-                        <h2 className="login-card-headline">הרשמה למערכת</h2>
+                        <h2 className="login-card-headline">יצירת חשבון חדש</h2>
 
                         <form onSubmit={handleRegister} className="login-form-element">
                             <div className="login-field-group">
@@ -87,19 +91,28 @@ function RegisterForm() {
                                 <input
                                     type="text"
                                     value={username}
-                                    placeholder="Enter username"
+                                    placeholder="הזן שם משתמש"
                                     onChange={(e) => setUsername(e.target.value)}
                                 />
                             </div>
 
                             <div className="login-field-group">
                                 <label>סיסמה</label>
-                                <input
-                                    type="password"
-                                    value={password}
-                                    placeholder="Enter password"
-                                    onChange={(e) => setPassword(e.target.value)}
-                                />
+                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <input
+                                        type={showPassword ? "text" : "password"}
+                                        value={password}
+                                        placeholder="הזן סיסמה (2-10 תווים)"
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        style={{ width: '100%', paddingLeft: '40px' }}
+                                    />
+                                    <span 
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        style={{ position: 'absolute', left: '12px', cursor: 'pointer', fontSize: '1.2rem', userSelect: 'none' }}
+                                    >
+                                        {showPassword ? "🙈" : "👁️"}
+                                    </span>
+                                </div>
                             </div>
 
                             <div className="login-field-group">
@@ -107,7 +120,7 @@ function RegisterForm() {
                                 <input
                                     type="email"
                                     value={email}
-                                    placeholder="Enter email"
+                                    placeholder="example@email.com"
                                     onChange={(e) => setEmail(e.target.value)}
                                 />
                             </div>
@@ -117,11 +130,11 @@ function RegisterForm() {
                                 type="submit"
                                 className="login-action-btn"
                             >
-                                Register
+                                הרשמה וסיום
                             </button>
                         </form>
 
-                        {/* הצגת הודעות השגיאה/הצלחה בתוך הקופסה */}
+
                         {message && (
                             <div className={`login-status ${isSuccess ? 'login-success' : 'login-error'}`}>
                                 {message}
@@ -135,7 +148,7 @@ function RegisterForm() {
                                 className="login-center-back-btn"
                                 onClick={() => navigate("/login")}
                             >
-                                חזרה לדף כניסה
+                                כבר יש לך חשבון? להתחברות
                             </button>
                         </div>
                     </div>

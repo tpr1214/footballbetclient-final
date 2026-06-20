@@ -1,12 +1,13 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import "./BackButton.css"; // ייבוא נקי ובטוח מאותה התיקייה!
+import "./BackButton.css";
 
 function BackButton() {
     const location = useLocation();
     const navigate = useNavigate();
 
-    // הסתרת הכפתור בדף הבית ובדשבורד הראשי, שם אין צורך לחזור אחורה
-    if (location.pathname === "/" || location.pathname === "/dashboard") {
+
+    const hiddenPaths = ["/", "/dashboard", "/login", "/register"];
+    if (hiddenPaths.includes(location.pathname)) {
         return null;
     }
 
