@@ -89,7 +89,7 @@ const navigate = useNavigate();
                         <p className="bet-round-info">מחזור {bet.roundNumber}</p>
 
                         {bet.status !== "PENDING" && (
-                            <div style={{background: 'var(--bg-input)', padding: '8px', borderRadius: '8px', margin: '12px 0'}}>
+                            <div style={{background: 'var(--bg-input)', padding: '8px', borderRadius: '12px', margin: '12px 0'}}>
                                 <p className="bet-actual-score" style={{textAlign: 'center', fontSize: '1.05rem', color: 'var(--text-primary)', margin: '0', fontWeight: 'bold'}}>
                                     תוצאה סופית: <span dir="ltr" style={{color: 'var(--accent-secondary)'}}>{bet.actualHomeScore} - {bet.actualAwayScore}</span>
                                 </p>

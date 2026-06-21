@@ -145,7 +145,7 @@ function BetPage() {
                                     <button
                                         type="button"
                                         onClick={() => handleSetMaxAmount(match.id)}
-                                        style={{padding: '0 10px', background: '#e2e8f0', border: '1px solid #cbd5e1', borderRadius: '8px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer'}}
+                                        style={{padding: '0 16px', background: '#e2e8f0', border: '1px solid #cbd5e1', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer'}}
                                     >
                                         MAX
                                     </button>
