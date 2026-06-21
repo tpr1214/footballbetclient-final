@@ -189,6 +189,17 @@
     margin: 0 8px !important;
 }
 
+.bet-match-card h3 .team-name-with-icon {
+    color: var(--text-primary) !important;
+    font-size: 1em !important;
+    margin: 0 !important;
+}
+
+.bet-match-card h3 .team-icon,
+.bet-match-card h3 .team-label {
+    margin: 0 !important;
+}
+
 .bet-match-info {
     font-size: 0.9rem !important;
     color: var(--text-secondary) !important;
@@ -225,6 +236,10 @@
     font-weight: 900 !important;
     font-size: 1.1rem !important;
     font-family: var(--font-display) !important;
+}
+
+.bet-odds-panel .team-name-with-icon {
+    flex: 0 1 auto !important;
 }
 
 .bet-field-label {

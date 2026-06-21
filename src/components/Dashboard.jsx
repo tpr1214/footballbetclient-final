@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserPendingBets } from "../service/betApi.js";
 import api from "../service/api.js";
+import TeamName from "./TeamName.jsx";
 import "./Dashboard.css";
 
 function Dashboard() {
@@ -98,7 +99,11 @@ function Dashboard() {
                         ) : (
                             matches.map((match) => (
                                 <div className="match-item-card" key={match.id}>
-                                    <div className="match-teams">{match.homeTeam} - {match.awayTeam}</div>
+                                    <div className="match-teams">
+                                        <TeamName team={match.homeTeam} />
+                                        <span>-</span>
+                                        <TeamName team={match.awayTeam} />
+                                    </div>
                                     <span className={`odds-status-badge ${match.isLive || match.matchTime === 'LIVE' ? 'live' : 'date'}`}>
                                         {match.matchTime}
                                     </span>
@@ -159,7 +164,11 @@ function Dashboard() {
                                 <div className="bet-item-card" key={bet.id}>
                                     <div className="bet-info-wrapper">
                                         <span className="bet-title">{translateOutcome(bet.predictedOutcome)}</span>
-                                        <small className="bet-teams-sub">{bet.homeTeam} - {bet.awayTeam}</small>
+                                        <small className="bet-teams-sub">
+                                            <TeamName team={bet.homeTeam} />
+                                            <span>-</span>
+                                            <TeamName team={bet.awayTeam} />
+                                        </small>
                                     </div>
                                     <span className="bet-odds-badge">
                                         {bet.odds ? bet.odds.toFixed(2) : "1.50"}

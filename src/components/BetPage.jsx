@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { placeBet } from "../service/betApi.js";
 import { getMatches } from "../service/leagueApi.js";
 import { getProfile } from "../service/authApi.js";
+import TeamName from "./TeamName.jsx";
+import {getTeamLabel} from "../utils/teamIcons.js";
 import "./BetPage.css";
 
 const getErrorMessage = (error, fallback) => {
@@ -123,7 +125,11 @@ function BetPage() {
                     ) : (
                         matches.map((match) => (
                             <section className="bet-match-card" key={match.id}>
-                                <h3>{match.homeTeam.name} <span style={{color: '#94a3b8', fontSize: '0.9rem'}}>VS</span> {match.awayTeam.name}</h3>
+                                <h3 className="bet-match-title-row">
+                                    <TeamName team={match.homeTeam} />
+                                    <span style={{color: '#94a3b8', fontSize: '0.9rem'}}>VS</span>
+                                    <TeamName team={match.awayTeam} />
+                                </h3>
                                 <p className="bet-match-info">
                                     ⏱️ מחזור {match.roundNumber} • <span style={{color: '#16a34a', fontWeight: 'bold'}}>🔓 חלון פתוח</span>
                                 </p>
@@ -157,7 +163,7 @@ function BetPage() {
                                         value={homeScoreByMatch[match.id] || ""}
                                         onChange={(e) => setHomeScoreByMatch((prev) => ({ ...prev, [match.id]: e.target.value }))}
                                     >
-                                        <option value="">{match.homeTeam.name}</option>
+                                        <option value="">{getTeamLabel(match.homeTeam)}</option>
                                         {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
                                     </select>
                                     <span>:</span>
@@ -165,7 +171,7 @@ function BetPage() {
                                         value={awayScoreByMatch[match.id] || ""}
                                         onChange={(e) => setAwayScoreByMatch((prev) => ({ ...prev, [match.id]: e.target.value }))}
                                     >
-                                        <option value="">{match.awayTeam.name}</option>
+                                        <option value="">{getTeamLabel(match.awayTeam)}</option>
                                         {SCORE_OPTIONS.map((score) => <option key={score} value={score}>{score}</option>)}
                                     </select>
                                 </div>
@@ -193,9 +199,9 @@ function OddsPanel({ match }) {
 
     return (
         <div className="bet-odds-panel">
-            <span>🏠 {match.homeTeam.name}: <strong>{odds.home}</strong></span>
+            <span><TeamName team={match.homeTeam} /> <strong>{odds.home}</strong></span>
             <span>🤝 תיקו: <strong>{odds.draw}</strong></span>
-            <span>🚌 {match.awayTeam.name}: <strong>{odds.away}</strong></span>
+            <span><TeamName team={match.awayTeam} /> <strong>{odds.away}</strong></span>
         </div>
     );
 }

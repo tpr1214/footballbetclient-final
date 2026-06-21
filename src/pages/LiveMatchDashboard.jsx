@@ -2,12 +2,14 @@
 import {useEffect, useState} from "react";
 import {API_BASE_URL} from "../service/api.js";
 import {getLeagueTable, getMatches, startNextRound} from "../service/leagueApi.js";
+import TeamName from "../components/TeamName.jsx";
 
 function LiveMatchDashboard (){
 const [matches, setMatches] = useState([]);
 const [leagueTable, setLeagueTable] = useState([]);
 const [roundNumber,setRoundNumber] = useState(0);
 const [isLive, setIsLive] = useState(false);
+const [goalAlert, setGoalAlert] = useState(null);
 const [statusMessage, setStatusMessage] = useState("מחובר לדשבורד הלייב");
 const activeMatches = matches.filter((match) => match.status === "LIVE" || match.status === "PENDING");
 const completedMatches = matches.filter((match) => match.status === "COMPLETED");
@@ -37,7 +39,13 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
         source.addEventListener("goal", (event) => {
             const data = JSON.parse(event.data);
             setStatusMessage(`גול! ${data.homeTeam} ${data.homeScore} - ${data.awayScore} ${data.awayTeam}`);
-            setMatches((prev) => updateMatchScore(prev, data));
+            setMatches((prev) => {
+                const goalDetails = getGoalDetails(prev, data);
+                if (goalDetails) {
+                    setGoalAlert(goalDetails);
+                }
+                return updateMatchScore(prev, data);
+            });
         });
 
         source.addEventListener("round-complete", (event) => {
@@ -54,6 +62,16 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
 
         return () => source.close();
     }, []);
+
+    useEffect(() => {
+        if (!goalAlert) return;
+
+        const timeoutId = setTimeout(() => {
+            setGoalAlert(null);
+        }, 10000);
+
+        return () => clearTimeout(timeoutId);
+    }, [goalAlert]);
 
     const handleStartRound = () => {
         setStatusMessage("מתחיל מחזור...");
@@ -81,6 +99,8 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
             </div>
 
             <p className="status-message">{statusMessage}</p>
+
+            {goalAlert && <GoalAlert alert={goalAlert} />}
 
             <div className="dashboard-layout">
                 <section>
@@ -122,7 +142,7 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
                         <tbody>
                         {leagueTable.map((team) => (
                             <tr key={team.id}>
-                                <td>{team.name}</td>
+                                <td><TeamName team={team} /></td>
                                 <td>{team.points}</td>
                                 <td>{team.goalsFor}</td>
                                 <td>{team.goalsAgainst}</td>
@@ -138,6 +158,25 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
     )
 }
 
+function GoalAlert({alert}) {
+    return (
+        <div className="goal-alert" role="status" aria-live="polite" dir="rtl">
+            <div className="goal-alert-kicker">גול!</div>
+            <div className="goal-alert-team">
+                {alert.scorers.map((team, index) => (
+                    <TeamName key={`${index}-${getDisplayTeamName(team)}`} team={team} />
+                ))}
+            </div>
+            <div className="goal-alert-score" dir="ltr">
+                {alert.homeScore} - {alert.awayScore}
+            </div>
+            <div className="goal-alert-match">
+                {getDisplayTeamName(alert.homeTeam)} נגד {getDisplayTeamName(alert.awayTeam)}
+            </div>
+        </div>
+    );
+}
+
 function MatchWindow({match}) {
     return (
         <article className={`match-window match-window-${match.status.toLowerCase()}`}>
@@ -148,14 +187,14 @@ function MatchWindow({match}) {
 
             <div className="scoreboard">
                 <div className="team-side">
-                    <span className="team-name">{match.homeTeam.name}</span>
+                    <span className="team-name"><TeamName team={match.homeTeam} /></span>
                     <span className="team-score">{match.homeScore}</span>
                 </div>
 
                 <span className="score-divider">:</span>
 
                 <div className="team-side">
-                    <span className="team-name">{match.awayTeam.name}</span>
+                    <span className="team-name"><TeamName team={match.awayTeam} /></span>
                     <span className="team-score">{match.awayScore}</span>
                 </div>
             </div>
@@ -182,6 +221,42 @@ function updateMatchScore(matches, event) {
             status: event.status
         };
     });
+}
+
+function getGoalDetails(matches, event) {
+    const previousMatch = matches.find((match) => match.id === event.matchId);
+    if (!previousMatch) {
+        return null;
+    }
+
+    const homeScored = Number(event.homeScore) > Number(previousMatch.homeScore);
+    const awayScored = Number(event.awayScore) > Number(previousMatch.awayScore);
+    const scorers = [];
+
+    if (homeScored) {
+        scorers.push(previousMatch.homeTeam || event.homeTeam);
+    }
+
+    if (awayScored) {
+        scorers.push(previousMatch.awayTeam || event.awayTeam);
+    }
+
+    if (scorers.length === 0) {
+        return null;
+    }
+
+    return {
+        scorers,
+        homeTeam: previousMatch.homeTeam || event.homeTeam,
+        awayTeam: previousMatch.awayTeam || event.awayTeam,
+        homeScore: event.homeScore,
+        awayScore: event.awayScore
+    };
+}
+
+function getDisplayTeamName(team) {
+    if (!team) return "";
+    return typeof team === "string" ? team.trim() : (team.name || "").trim();
 }
 
 function mergeMatches(currentMatches, updatedMatches) {

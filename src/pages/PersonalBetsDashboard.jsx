@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {getUserBets} from "../service/betApi.js";
 import {getProfile} from "../service/authApi.js";
+import TeamName from "../components/TeamName.jsx";
 import "./PersonalBets.css";
 
 function PersonalBetsDashboard (){
@@ -85,7 +86,11 @@ const navigate = useNavigate();
                             {getStatusText(bet.status)}
                         </div>
                         
-                        <h3 className="bet-match-title">{bet.homeTeam} VS {bet.awayTeam}</h3>
+                        <h3 className="bet-match-title">
+                            <TeamName team={bet.homeTeam} />
+                            <span>VS</span>
+                            <TeamName team={bet.awayTeam} />
+                        </h3>
                         <p className="bet-round-info">מחזור {bet.roundNumber}</p>
 
                         {bet.status !== "PENDING" && (
