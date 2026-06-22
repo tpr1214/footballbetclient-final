@@ -1,6 +1,6 @@
 const SPORT_DB_BASE_URL = "https://www.thesportsdb.com/api/v1/json/123";
 const API_FOOTBALL_LOGO_BASE_URL = "https://media.api-sports.io/football/teams";
-const LOGO_CACHE_KEY = "footballbet-team-logos-v1";
+const LOGO_CACHE_KEY = "footballbet-team-logos-v2";
 const LOGO_CACHE_TTL = 1000 * 60 * 60 * 24;
 
 const TEAM_DATA_URLS = [
@@ -48,6 +48,11 @@ const STATIC_API_FOOTBALL_IDS = {
     "מכבי נתניה": "605",
     "הפועל תל אביב": "4501",
     "עירוני קרית שמונה": "4510"
+};
+
+// api-football ID 562 resolves to Astana FC (Kazakhstan), not Maccabi Haifa — override with the correct badge.
+const LOGO_OVERRIDES = {
+    "מכבי חיפה": "https://www.thesportsdb.com/images/media/team/badge/kh3psh1781805608.png"
 };
 
 let logoMapPromise;
@@ -108,6 +113,10 @@ async function fetchTeamLogos() {
 
     Object.entries(STATIC_API_FOOTBALL_IDS).forEach(([teamName, apiFootballId]) => {
         logos[normalizeName(teamName)] = `${API_FOOTBALL_LOGO_BASE_URL}/${apiFootballId}.png`;
+    });
+
+    Object.entries(LOGO_OVERRIDES).forEach(([teamName, logoUrl]) => {
+        logos[normalizeName(teamName)] = logoUrl;
     });
 
     try {
