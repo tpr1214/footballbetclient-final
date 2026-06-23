@@ -1,0 +1,11 @@
+[33mab877c0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m)[m HEAD@{0}: merge origin/master: Fast-forward
+[33m4142427[m HEAD@{1}: commit: מאיי איליה שיר ושירה
+[33m61c6c79[m HEAD@{2}: pull --rebase origin master: Fast-forward
+[33m5d575f7[m[33m ([m[1;31morigin/feature/design-upgrade[m[33m, [m[1;32mfeature/design-upgrade[m[33m)[m HEAD@{3}: merge feature/design-upgrade: Fast-forward
+[33m828d251[m HEAD@{4}: checkout: moving from feature/design-upgrade to master
+[33m5d575f7[m[33m ([m[1;31morigin/feature/design-upgrade[m[33m, [m[1;32mfeature/design-upgrade[m[33m)[m HEAD@{5}: commit: מאיי איליה שיר ושירה
+[33me0671b2[m HEAD@{6}: commit: מאיי איליה שיר ושירה
+[33mafee98e[m HEAD@{7}: commit: style: add football broadcast aesthetics and patterns
+[33mb188bbd[m HEAD@{8}: commit: feat: design upgrade with dual theme (dark/light mode)
+[33m828d251[m HEAD@{9}: checkout: moving from master to feature/design-upgrade
+[33m828d251[m HEAD@{10}: commit (initial): איליה מאיי שירה
