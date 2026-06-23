@@ -124,7 +124,7 @@ function Dashboard() {
                     <div className="dash-actions-grid">
                         <div className="action-grid-card" onClick={() => navigate("/bet")}>
                             <div className="action-card-icon">⚽</div>
-                            <h4>להמר על משחקים</h4>
+                            <h4>זירת הימורים</h4>
                             <span className="action-arrow">←</span>
                         </div>
                         <div className="action-grid-card" onClick={() => navigate("/live")}>

@@ -19,7 +19,8 @@ function MainPage() {
             <main className="main-content-area">
                 <div className="main-hero-card">
                     <div className="main-hero-badge">🏆</div>
-                    <h1>ליגת הכדורגל</h1>
+                    <h1> Football Bet
+                    </h1>
                     <p>
                         ברוכים הבאים לפלטפורמת ניהול הליגה וההימורים הדינמית.
                         עקבו אחר משחקים בזמן אמת, נהלו את היתרה שלכם ובצעו הימורים אסטרטגיים.

@@ -48,7 +48,7 @@ function Login() {
                     <span className="login-nav-icon">⚽</span>
                     <span className="login-nav-logo-text" style={{cursor: 'pointer'}} onClick={() => navigate("/")}>FootballBet</span>
                     <span className="login-nav-divider">|</span>
-                    <span className="login-nav-subtext">אפליקציית הימורי כדורגל</span>
+                    <span className="login-nav-subtext">   </span>
                 </div>
 
                 <div className="login-nav-actions">
