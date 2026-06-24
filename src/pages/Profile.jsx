@@ -188,8 +188,7 @@ function Profile() {
                         />
                     </div>
                     <div>
-                        <h1>My Profile</h1>
-                        <p>{username || "Logged-in user"}</p>
+                        <h1>{username || "Profile"}</h1>
                     </div>
                 </div>
 
