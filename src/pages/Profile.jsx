@@ -220,14 +220,6 @@ function Profile() {
                         <span>Username</span>
                         <strong>{username || "-"}</strong>
                     </section>
-                    <section>
-                        <span>Link</span>
-                        <strong>
-                            {profileLink ? (
-                                <a href={profileLink} target="_blank" rel="noreferrer">Open link</a>
-                            ) : "-"}
-                        </strong>
-                    </section>
                 </div>
 
                 <form className="profile-form" onSubmit={handleSave}>
@@ -238,13 +230,6 @@ function Profile() {
                         value={username}
                         placeholder="Username"
                         onChange={(event) => setUsername(event.target.value)}
-                    />
-                    <label htmlFor="profile-link">Link</label>
-                    <input
-                        id="profile-link"
-                        value={profileLink}
-                        placeholder="Website, social media, or portfolio"
-                        onChange={(event) => setProfileLink(event.target.value)}
                     />
                     <button type="submit" className="save-btn" disabled={isSaving}>
                         {isSaving ? "Saving..." : "Save Profile"}
