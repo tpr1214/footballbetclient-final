@@ -1,17 +1,13 @@
 import api from "./api";
-import { getStoredUser } from "./auth.js";
+import { authHeader } from "./auth.js";
 
-// The backend identifies the requester via the X-User-Id header and verifies the
-// ADMIN role server-side before allowing any admin action.
-const adminHeaders = () => {
-    const user = getStoredUser();
-    return { headers: { "X-User-Id": user?.id } };
-};
-
+// Admin endpoints now require a JWT with role ADMIN. The token is sent as
+// `Authorization: Bearer <token>`; the backend authorizes by role (no longer by
+// the spoofable X-User-Id header).
 export const getAllUsers = () => {
-    return api.get("/admin/users", adminHeaders());
+    return api.get("/admin/users", authHeader());
 };
 
 export const updateUserBalance = (userId, balance) => {
-    return api.put(`/admin/users/${userId}/balance`, { balance }, adminHeaders());
+    return api.put(`/admin/users/${userId}/balance`, { balance }, authHeader());
 };
