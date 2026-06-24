@@ -137,10 +137,9 @@ function BetPage() {
                                 <OddsPanel match={match} />
 
                                 <p className="bet-field-label">סכום הימור בש"ח</p>
-                                <div style={{display: 'flex', gap: '8px', marginBottom: '15px'}}>
+                                <div className="bet-amount-row">
                                     <input
                                         className="bet-amount-input"
-                                        style={{marginBottom: 0}}
                                         type="number"
                                         min="1"
                                         max={balance}
@@ -150,8 +149,8 @@ function BetPage() {
                                     />
                                     <button
                                         type="button"
+                                        className="bet-max-btn"
                                         onClick={() => handleSetMaxAmount(match.id)}
-                                        style={{padding: '0 16px', background: '#e2e8f0', border: '1px solid #cbd5e1', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 'bold', cursor: 'pointer'}}
                                     >
                                         MAX
                                     </button>

@@ -1,81 +1,195 @@
-import {useEffect, useState} from "react";
-import {getProfile, updateProfile} from "../service/authApi.js";
-import {getUserBets} from "../service/betApi.js";
+import { useEffect, useRef, useState } from "react";
+import { getProfile, updateProfile, uploadProfileImage } from "../service/authApi.js";
+import { getUserBets } from "../service/betApi.js";
+import { useAuth } from "../auth/AuthContext.jsx";
 
-function Profile (){
-const [username, setUsername] = useState("");
-const [email, setEmail] = useState("");
-const [balance, setBalance] = useState("");
-const [profileImageUrl, setProfileImageUrl] = useState("");
-const [bets, setBets] = useState([]);
-const [message, setMessage] = useState("");
-const [isSaving, setIsSaving] = useState(false);
-const [userId, setUserId] = useState(null);
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
+const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
+function Profile() {
+    const { setUser: setAuthUser } = useAuth();
+    const [storedUser] = useState(() => JSON.parse(localStorage.getItem("currentUser") || "null"));
+    const [username, setUsername] = useState("");
+    const [email, setEmail] = useState("");
+    const [balance, setBalance] = useState("");
+    const [profileImageUrl, setProfileImageUrl] = useState(() => getProfileImageUrl(storedUser));
+    const [failedProfileImageUrl, setFailedProfileImageUrl] = useState("");
+    const [profileLink, setProfileLink] = useState("");
+    const [bets, setBets] = useState([]);
+    const [message, setMessage] = useState(storedUser?.id ? "" : "No logged-in user was found.");
+    const [isSaving, setIsSaving] = useState(false);
+    const [userId] = useState(storedUser?.id || null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [previewUrl, setPreviewUrl] = useState("");
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("currentUser") || "null");
-        if (!user?.id) {
-            setMessage("לא נמצא משתמש מחובר.");
+        if (!storedUser?.id) {
             return;
         }
 
-        setUserId(user.id);
-
-        getProfile(user.id)
+        getProfile(storedUser.id)
             .then((response) => {
-                setUsername(response.data.username);
-                setEmail(response.data.email);
-                setBalance(response.data.balance);
-                setProfileImageUrl(response.data.profileImageUrl || "");
-                localStorage.setItem("currentUser", JSON.stringify(response.data));
+                const user = response.data;
+                setUsername(user.username || "");
+                setEmail(user.email || "");
+                setBalance(user.balance);
+                setProfileImageUrl(getProfileImageUrl(user));
+                setFailedProfileImageUrl("");
+                setProfileLink(user.profileLink || "");
+                // Update the shared auth state so the navbar avatar stays in sync.
+                setAuthUser(user);
             })
-            .catch(() => setMessage("לא ניתן לטעון פרופיל כרגע."));
+            .catch(() => setMessage("Could not load the profile right now."));
 
-        getUserBets(user.id)
+        getUserBets(storedUser.id)
             .then((response) => setBets(response.data))
-            .catch(() => setMessage("הפרופיל נטען, אבל לא ניתן לטעון סטטיסטיקות הימורים כרגע."));
-    }, []);
+            .catch(() => setMessage("Profile loaded, but betting statistics could not be loaded right now."));
+    }, [storedUser, setAuthUser]);
+
+    // Revoke the in-memory preview URL when it changes or the component unmounts.
+    useEffect(() => {
+        return () => {
+            if (previewUrl) {
+                URL.revokeObjectURL(previewUrl);
+            }
+        };
+    }, [previewUrl]);
 
     const stats = calculateBetStats(bets);
+    // The avatar shows the locally-chosen image preview while one is pending,
+    // otherwise the stored profile image.
+    const displayImageUrl = previewUrl || profileImageUrl;
+    const shouldShowProfileImage = previewUrl
+        ? true
+        : Boolean(profileImageUrl) && failedProfileImageUrl !== profileImageUrl;
 
-    const handleSave = (event) => {
-        event.preventDefault();
-        if (!userId) {
-            setMessage("לא נמצא משתמש מחובר.");
+    const clearSelectedImage = () => {
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+        }
+        setSelectedFile(null);
+        setPreviewUrl("");
+        if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+        }
+    };
+
+    const handleFileChange = (event) => {
+        const file = event.target.files && event.target.files[0];
+        setMessage("");
+
+        if (!file) {
+            clearSelectedImage();
             return;
         }
 
-        setIsSaving(true);
-        updateProfile(userId, {username, profileImageUrl})
-            .then((response) => {
-                setUsername(response.data.username);
-                setProfileImageUrl(response.data.profileImageUrl || "");
-                localStorage.setItem("currentUser", JSON.stringify(response.data));
-                setMessage("הפרופיל עודכן בהצלחה.");
-            })
-            .catch(() => setMessage("שמירת הפרופיל נכשלה."))
-            .finally(() => setIsSaving(false));
+        if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+            clearSelectedImage();
+            setMessage("Unsupported file type. Please choose a JPG, JPEG, PNG, or WEBP image.");
+            return;
+        }
+
+        if (file.size > MAX_IMAGE_SIZE_BYTES) {
+            clearSelectedImage();
+            setMessage("The file is too large. The maximum allowed size is 5MB.");
+            return;
+        }
+
+        if (previewUrl) {
+            URL.revokeObjectURL(previewUrl);
+        }
+        setSelectedFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
     };
 
-    return(
+    const handleSave = async (event) => {
+        event.preventDefault();
+        if (!userId) {
+            setMessage("No logged-in user was found.");
+            return;
+        }
+
+        // Preserve the current image unless a new file is being uploaded.
+        let finalProfileImageUrl = profileImageUrl;
+        setIsSaving(true);
+        setMessage("");
+        setFailedProfileImageUrl("");
+
+        try {
+            if (selectedFile) {
+                // Upload the chosen file via multipart; the server stores it and
+                // returns the persisted public image URL.
+                const uploadResponse = await uploadProfileImage(userId, selectedFile);
+                finalProfileImageUrl = getProfileImageUrl(uploadResponse.data);
+            }
+
+            const requestPayload = {
+                username,
+                profileImageUrl: finalProfileImageUrl,
+                profileLink
+            };
+            const response = await updateProfile(userId, requestPayload);
+            const savedProfileImageUrl = getProfileImageUrl(response.data);
+
+            setUsername(response.data.username || "");
+            setProfileImageUrl(savedProfileImageUrl);
+            setProfileLink(response.data.profileLink || "");
+            setFailedProfileImageUrl("");
+            clearSelectedImage();
+            // Propagate to the shared auth state so EVERY avatar (navbar included)
+            // re-renders from the same updated user object.
+            setAuthUser(response.data);
+            setMessage("Profile updated successfully.");
+        } catch (error) {
+            const serverMessage = error.response?.data?.message || (typeof error.response?.data === "string" ? error.response.data : null);
+            setMessage(serverMessage || error.message || "Saving the profile failed.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    return (
         <div className="page-shell">
             <div className="profile-panel">
                 <div className="profile-hero">
-                    <div className="profile-avatar">
-                        {profileImageUrl ? (
-                            <img 
-                                src={profileImageUrl} 
-                                alt="Profile"
-                                onError={(e) => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }}
-                            />
-                        ) : null}
-                        <div style={{ display: profileImageUrl ? 'none' : 'flex', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center' }}>
-                            {getInitials(username || email)}
-                        </div>
+                    <div className="profile-avatar-block">
+                        <button
+                            type="button"
+                            className="profile-avatar profile-avatar-button"
+                            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                            title="Change image"
+                            aria-label="Change profile image"
+                        >
+                            {shouldShowProfileImage ? (
+                                <img
+                                    src={displayImageUrl}
+                                    alt="Profile"
+                                    onError={() => {
+                                        if (!previewUrl) {
+                                            setFailedProfileImageUrl(profileImageUrl);
+                                        }
+                                    }}
+                                />
+                            ) : null}
+                            <div style={{ display: shouldShowProfileImage ? "none" : "flex", width: "100%", height: "100%", alignItems: "center", justifyContent: "center" }}>
+                                {getInitials(username || email)}
+                            </div>
+                            <span className="profile-avatar-overlay">📷</span>
+                        </button>
+
+                        <input
+                            ref={fileInputRef}
+                            id="profile-image-file"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp"
+                            onChange={handleFileChange}
+                            style={{ display: "none" }}
+                        />
                     </div>
                     <div>
-                        <h1>הפרופיל שלי</h1>
-                        <p>{username || "משתמש מחובר"}</p>
+                        <h1>My Profile</h1>
+                        <p>{username || "Logged-in user"}</p>
                     </div>
                 </div>
 
@@ -83,50 +197,62 @@ const [userId, setUserId] = useState(null);
 
                 <div className="profile-stats">
                     <section>
-                        <span>יתרה זמינה</span>
+                        <span>Available balance</span>
                         <strong>{formatBalance(balance)}</strong>
                     </section>
                     <section>
-                        <span>הימורים שבוצעו</span>
+                        <span>Total bets</span>
                         <strong>{stats.totalBets}</strong>
                     </section>
                     <section>
-                        <span>אחוז זכייה</span>
+                        <span>Win rate</span>
                         <strong>{stats.winRate}%</strong>
                     </section>
                     <section>
-                        <span>כסף שהורווח</span>
+                        <span>Total earnings</span>
                         <strong>{stats.totalEarnings.toFixed(2)}</strong>
                     </section>
                     <section>
-                        <span>אימייל</span>
+                        <span>Email</span>
                         <strong>{email || "-"}</strong>
                     </section>
                     <section>
-                        <span>שם משתמש</span>
+                        <span>Username</span>
                         <strong>{username || "-"}</strong>
+                    </section>
+                    <section>
+                        <span>Link</span>
+                        <strong>
+                            {profileLink ? (
+                                <a href={profileLink} target="_blank" rel="noreferrer">Open link</a>
+                            ) : "-"}
+                        </strong>
                     </section>
                 </div>
 
                 <form className="profile-form" onSubmit={handleSave}>
-                    <h2>עריכת פרופיל</h2>
+                    <h2>Edit Profile</h2>
+                    <label htmlFor="profile-username">Name</label>
                     <input
+                        id="profile-username"
                         value={username}
-                        placeholder="שם משתמש"
+                        placeholder="Username"
                         onChange={(event) => setUsername(event.target.value)}
                     />
+                    <label htmlFor="profile-link">Link</label>
                     <input
-                        value={profileImageUrl}
-                        placeholder="קישור לתמונת פרופיל"
-                        onChange={(event) => setProfileImageUrl(event.target.value)}
+                        id="profile-link"
+                        value={profileLink}
+                        placeholder="Website, social media, or portfolio"
+                        onChange={(event) => setProfileLink(event.target.value)}
                     />
                     <button type="submit" className="save-btn" disabled={isSaving}>
-                        {isSaving ? "שומר..." : "שמור פרופיל"}
+                        {isSaving ? "Saving..." : "Save Profile"}
                     </button>
                 </form>
             </div>
         </div>
-    )
+    );
 }
 
 function getInitials(value) {
@@ -138,6 +264,10 @@ function getInitials(value) {
         .map((part) => part[0])
         .join("")
         .toUpperCase();
+}
+
+function getProfileImageUrl(user) {
+    return user?.profileImageUrl || user?.profileImageLink || "";
 }
 
 function formatBalance(value) {
@@ -161,4 +291,4 @@ function calculateBetStats(bets) {
     };
 }
 
-export default  Profile;
+export default Profile;

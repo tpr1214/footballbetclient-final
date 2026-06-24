@@ -2,10 +2,12 @@ import { useState } from "react";
 import { login } from "../service/authApi.js";
 import { useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle.jsx";
+import { useAuth } from "../auth/AuthContext.jsx";
 import "./Login.css";
 
 function Login() {
     const navigate = useNavigate();
+    const { login: setAuthUser } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -27,7 +29,7 @@ function Login() {
                 setIsSuccess(true);
                 setErrorMessage("התחברת בהצלחה למערכת!");
                 console.log("Logged in user:", response.data);
-                localStorage.setItem("currentUser", JSON.stringify(response.data));
+                setAuthUser(response.data);
                 setEmail("");
                 setPassword("");
                 navigate("/dashboard");

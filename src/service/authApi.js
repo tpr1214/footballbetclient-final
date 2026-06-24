@@ -17,3 +17,10 @@ export const getProfile = (userId) => {
 export const updateProfile = (userId, data) => {
     return api.put(`/auth/profile/${userId}`, data);
 }
+
+export const uploadProfileImage = (userId, file) => {
+    const formData = new FormData();
+    formData.append("file", file);
+    // Let the browser set the multipart/form-data Content-Type (with boundary).
+    return api.post(`/auth/profile/${userId}/image`, formData);
+}
