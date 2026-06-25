@@ -2,6 +2,7 @@
 import {useEffect, useState} from "react";
 import {API_BASE_URL} from "../service/api.js";
 import {getLeagueTable, getMatches, regenerateRounds, startNextRound} from "../service/leagueApi.js";
+import {getStoredUser} from "../service/auth.js";
 import TeamName from "../components/TeamName.jsx";
 
 function LiveMatchDashboard (){
@@ -29,11 +30,19 @@ const canRegenerate = matches.length > 0 && pendingMatches.length === 0 && !isLi
     };
 
     useEffect(() => {
+        const user = getStoredUser();
+        const userId = user?.id;
+        if (!userId) {
+            setStatusMessage("יש להתחבר מחדש כדי לצפות בליגה האישית.");
+            return;
+        }
+
         loadData();
-        const source = new EventSource(`${API_BASE_URL}/live/stream`);
+        const source = new EventSource(`${API_BASE_URL}/live/stream?userId=${encodeURIComponent(userId)}`);
 
         source.addEventListener("match-update", (event) => {
             const data = JSON.parse(event.data);
+            if (!isEventForUser(data, userId)) return;
             setStatusMessage(`מחזור ${data.roundNumber} התחיל`);
             setIsLive(true);
             setRoundNumber(data.roundNumber);
@@ -42,6 +51,7 @@ const canRegenerate = matches.length > 0 && pendingMatches.length === 0 && !isLi
 
         source.addEventListener("goal", (event) => {
             const data = JSON.parse(event.data);
+            if (!isEventForUser(data, userId)) return;
             setStatusMessage(`גול! ${data.homeTeam} ${data.homeScore} - ${data.awayScore} ${data.awayTeam}`);
             setMatches((prev) => {
                 const goalDetails = getGoalDetails(prev, data);
@@ -54,6 +64,7 @@ const canRegenerate = matches.length > 0 && pendingMatches.length === 0 && !isLi
 
         source.addEventListener("round-complete", (event) => {
             const data = JSON.parse(event.data);
+            if (!isEventForUser(data, userId)) return;
             setStatusMessage(`מחזור ${data.roundNumber} הסתיים`);
             setIsLive(false);
             setMatches((prev) => mergeMatches(prev, data.matches || []));
@@ -105,7 +116,7 @@ const canRegenerate = matches.length > 0 && pendingMatches.length === 0 && !isLi
         setStatusMessage("יוצר מחזורים חדשים...");
         regenerateRounds()
             .then((response) => {
-                setMatches((prev) => mergeMatches(prev, response.data));
+                setMatches(response.data);
                 setRoundNumber(response.data[0]?.roundNumber || 0);
                 setIsLive(false);
                 setStatusMessage("נוצרו מחזורים חדשים! אפשר להתחיל מחזור.");
@@ -303,6 +314,10 @@ function mergeMatches(currentMatches, updatedMatches) {
     const byId = new Map(currentMatches.map((match) => [match.id, match]));
     updatedMatches.forEach((match) => byId.set(match.id, match));
     return Array.from(byId.values()).sort((a, b) => a.roundNumber - b.roundNumber || a.id - b.id);
+}
+
+function isEventForUser(data, userId) {
+    return data.userId == null || Number(data.userId) === Number(userId);
 }
 
 export default LiveMatchDashboard ;
