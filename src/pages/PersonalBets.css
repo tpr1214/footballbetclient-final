@@ -39,7 +39,11 @@
 
 .bets-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    /* auto-fit collapses empty tracks and justify-content centers the populated
+       ones, so the cards stay centered instead of hugging the (RTL) side when a
+       row isn't full. Capping the column width keeps a single card centered too. */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 380px));
+    justify-content: center;
     gap: 24px;
 }
 

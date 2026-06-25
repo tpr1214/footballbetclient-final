@@ -1,7 +1,7 @@
 
 import {useEffect, useState} from "react";
 import {API_BASE_URL} from "../service/api.js";
-import {getLeagueTable, getMatches, startNextRound} from "../service/leagueApi.js";
+import {getLeagueTable, getMatches, regenerateRounds, startNextRound} from "../service/leagueApi.js";
 import TeamName from "../components/TeamName.jsx";
 
 function LiveMatchDashboard (){
@@ -13,6 +13,10 @@ const [goalAlert, setGoalAlert] = useState(null);
 const [statusMessage, setStatusMessage] = useState("מחובר לדשבורד הלייב");
 const activeMatches = matches.filter((match) => match.status === "LIVE" || match.status === "PENDING");
 const completedMatches = matches.filter((match) => match.status === "COMPLETED");
+const pendingMatches = matches.filter((match) => match.status === "PENDING");
+// The season is over (and a new cycle can be generated) once there are matches,
+// none are still pending, and nothing is live.
+const canRegenerate = matches.length > 0 && pendingMatches.length === 0 && !isLive;
 
     const loadData = () => {
         getMatches().then((response) => {
@@ -97,6 +101,22 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
             });
     };
 
+    const handleRegenerate = () => {
+        setStatusMessage("יוצר מחזורים חדשים...");
+        regenerateRounds()
+            .then((response) => {
+                setMatches((prev) => mergeMatches(prev, response.data));
+                setRoundNumber(response.data[0]?.roundNumber || 0);
+                setIsLive(false);
+                setStatusMessage("נוצרו מחזורים חדשים! אפשר להתחיל מחזור.");
+            })
+            .catch((error) => {
+                const data = error.response?.data;
+                const serverMessage = typeof data === "string" ? data : data?.message;
+                setStatusMessage(serverMessage || "לא ניתן ליצור מחזורים חדשים כרגע.");
+            });
+    };
+
     return (
         <div className="page-shell">
             <div className="page-header">
@@ -104,9 +124,18 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
                     <h1>דשבורד משחקים חיים</h1>
                     {roundNumber > 0 && <p className="header-subtitle">מחזור {roundNumber}</p>}
                 </div>
-                <button disabled={isLive} onClick={handleStartRound}>
-                    התחל מחזור הבא
-                </button>
+                <div className="page-header-actions">
+                    <button disabled={isLive} onClick={handleStartRound}>
+                        התחל מחזור הבא
+                    </button>
+                    <button
+                        disabled={!canRegenerate}
+                        onClick={handleRegenerate}
+                        title={canRegenerate ? "" : "אפשר ליצור מחזורים חדשים רק אחרי שכל המחזורים שוחקו"}
+                    >
+                        צור מחזורים חדשים
+                    </button>
+                </div>
             </div>
 
             <p className="status-message">{statusMessage}</p>

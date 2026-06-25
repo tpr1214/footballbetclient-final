@@ -190,6 +190,12 @@ main,
   font-size: 1.75rem;
 }
 
+.page-header-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .header-subtitle {
   margin: 6px 0 0;
   color: var(--accent-primary);
