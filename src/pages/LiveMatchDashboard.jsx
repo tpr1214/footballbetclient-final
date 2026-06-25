@@ -82,7 +82,18 @@ const completedMatches = matches.filter((match) => match.status === "COMPLETED")
                 setIsLive(true);
             })
             .catch((error) => {
-                setStatusMessage(error.response?.data?.message || error.response?.data || "לא ניתן להתחיל מחזור כרגע.");
+                const status = error.response?.status;
+                const data = error.response?.data;
+                // Spring's 401/403 bodies are objects ({timestamp,status,error,path})
+                // with no `message`; never assign one to state or React crashes (#31).
+                const serverMessage = typeof data === "string" ? data : data?.message;
+                if (status === 403) {
+                    setStatusMessage("אין לך הרשאת מנהל להתחלת מחזור.");
+                } else if (status === 401) {
+                    setStatusMessage("יש להתחבר מחדש כדי להתחיל מחזור.");
+                } else {
+                    setStatusMessage(serverMessage || "לא ניתן להתחיל מחזור כרגע.");
+                }
             });
     };
 

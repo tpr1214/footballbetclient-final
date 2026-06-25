@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { getProfile, updateProfile, uploadProfileImage } from "../service/authApi.js";
 import { getUserBets } from "../service/betApi.js";
 import { useAuth } from "../auth/AuthContext.jsx";
+import { resolveImageUrl } from "../utils/imageUrl.js";
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
@@ -163,7 +164,7 @@ function Profile() {
                         >
                             {shouldShowProfileImage ? (
                                 <img
-                                    src={displayImageUrl}
+                                    src={resolveImageUrl(displayImageUrl)}
                                     alt="Profile"
                                     onError={() => {
                                         if (!previewUrl) {
