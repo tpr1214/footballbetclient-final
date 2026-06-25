@@ -2,10 +2,13 @@ import { useState } from "react";
 import { register } from "../service/authApi.js";
 import { useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle.jsx";
+import { useAuth } from "../auth/AuthContext.jsx";
+import { getErrorMessage } from "../service/errorMessage.js";
 import "./RegisterForm.css";
 
 function RegisterForm() {
     const navigate = useNavigate();
+    const { logout } = useAuth();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -64,21 +67,23 @@ function RegisterForm() {
             .then((response) => {
                 setIsSuccess(true);
                 setMessage(response.data || "המשתמש נרשם בהצלחה!");
+                logout();
 
                 setUsername("");
                 setPassword("");
                 setEmail("");
 
-                setTimeout(() => navigate("/login"), 1200);
+                navigate("/login", { replace: true, state: { registered: true } });
             })
             .catch((error) => {
                 console.log(error);
 
                 setIsSuccess(false);
 
-                const serverErrorMessage =
-                    error.response?.data ||
-                    "הרשמה נכשלה, אנא נסה שוב.";
+                const serverErrorMessage = getErrorMessage(
+                    error,
+                    "הרשמה נכשלה, אנא נסה שוב."
+                );
 
                 setMessage(serverErrorMessage);
             });

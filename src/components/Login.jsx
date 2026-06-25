@@ -1,18 +1,22 @@
 import { useState } from "react";
 import { login } from "../service/authApi.js";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle.jsx";
 import { useAuth } from "../auth/AuthContext.jsx";
+import { getErrorMessage } from "../service/errorMessage.js";
 import "./Login.css";
 
 function Login() {
     const navigate = useNavigate();
+    const location = useLocation();
     const { login: setAuthUser } = useAuth();
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
-    const [isSuccess, setIsSuccess] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(() =>
+        location.state?.registered ? "ההרשמה הושלמה. כעת ניתן להתחבר." : ""
+    );
+    const [isSuccess, setIsSuccess] = useState(() => Boolean(location.state?.registered));
     const [showPassword, setShowPassword] = useState(false);
 
     const handleLogin = (e) => {
@@ -37,7 +41,7 @@ function Login() {
             .catch(err => {
                 console.log(err);
                 setIsSuccess(false);
-                const serverErrorMessage = err.response?.data || "ההתחברות נכשלה, אנא נסה שוב.";
+                const serverErrorMessage = getErrorMessage(err, "ההתחברות נכשלה, אנא נסה שוב.");
                 setErrorMessage(serverErrorMessage);
             });
     };
