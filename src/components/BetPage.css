@@ -398,6 +398,38 @@
     box-shadow: 0 0 25px var(--accent-primary-glow), var(--shadow-lg) !important;
 }
 
+.bet-draw-divider {
+    text-align: center !important;
+    color: var(--text-muted) !important;
+    font-weight: 700 !important;
+    font-size: 0.85rem !important;
+    margin: 10px 0 !important;
+}
+
+/* Secondary action: visually distinct from the primary exact-score submit. */
+.bet-draw-btn {
+    width: 100% !important;
+    padding: 12px 28px !important;
+    background: transparent !important;
+    color: var(--accent-secondary, #38bdf8) !important;
+    border: 2px solid var(--accent-secondary, #38bdf8) !important;
+    border-radius: 50px !important;
+    font-size: 1.05rem !important;
+    font-weight: 800 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box !important;
+    min-height: 52px !important;
+    white-space: normal !important;
+    line-height: 1.4 !important;
+}
+
+.bet-draw-btn:hover {
+    background: var(--accent-secondary, #38bdf8) !important;
+    color: #ffffff !important;
+    transform: translateY(-2px) !important;
+}
+
 .bet-status-message {
     padding: 12px 20px !important;
     border-radius: 10px !important;

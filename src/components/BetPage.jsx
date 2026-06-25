@@ -106,6 +106,44 @@ function BetPage() {
             });
     };
 
+    // Quick "bet on a draw" outcome bet: wins if the match ends in any draw,
+    // independent of the exact score. No predicted score is sent, so the server
+    // settles it on the outcome alone (fixed draw odds).
+    const handlePlaceDrawBet = (matchId) => {
+        if (!user?.id) {
+            setMessage("צריך להתחבר לפני ביצוע הימור.");
+            navigate("/login");
+            return;
+        }
+
+        const amount = Number(amountByMatch[matchId]);
+        if (!amount || amount <= 0) {
+            setMessage("הזן סכום חיובי.");
+            return;
+        }
+        if (amount > balance) {
+            setMessage(`אין מספיק יתרה. היתרה שלך היא ${balance.toFixed(2)} בלבד.`);
+            return;
+        }
+
+        placeBet({
+            userId: user.id,
+            matchId,
+            predictedOutcome: "DRAW",
+            amount
+        })
+            .then(() => {
+                const updatedUser = { ...user, balance: balance - amount };
+                localStorage.setItem("currentUser", JSON.stringify(updatedUser));
+                setBalance((prev) => prev - amount);
+                setMessage("הימור על תיקו נשמר בהצלחה במערכת!");
+                setAmountByMatch((prev) => ({ ...prev, [matchId]: "" }));
+            })
+            .catch((error) => {
+                setMessage(getErrorMessage(error, "שמירת ההימור נכשלה."));
+            });
+    };
+
     const statusClass = message.includes("בהצלחה") ? "bet-status-message bet-status-success" : "bet-status-message";
 
     return (
@@ -181,6 +219,17 @@ function BetPage() {
 
                                 <button className="bet-action-btn" onClick={() => handlePlaceBet(match.id)}>
                                     אישור ושליחת טופס
+                                </button>
+
+                                <div className="bet-draw-divider">או</div>
+
+                                <button
+                                    type="button"
+                                    className="bet-draw-btn"
+                                    onClick={() => handlePlaceDrawBet(match.id)}
+                                    title="הימור שמנצח אם המשחק יסתיים בתיקו, בכל תוצאה"
+                                >
+                                    🤝 הימור על תיקו (מכפיל ×4)
                                 </button>
                             </section>
                         ))

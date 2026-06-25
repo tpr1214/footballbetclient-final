@@ -108,7 +108,11 @@ const navigate = useNavigate();
                             </div>
                             <div className="bet-detail-box">
                                 <span className="bet-detail-label">ניבוי מדויק</span>
-                                <span className="bet-detail-value" dir="ltr">{bet.predictedHomeScore} - {bet.predictedAwayScore}</span>
+                                {bet.predictedHomeScore != null && bet.predictedAwayScore != null ? (
+                                    <span className="bet-detail-value" dir="ltr">{bet.predictedHomeScore} - {bet.predictedAwayScore}</span>
+                                ) : (
+                                    <span className="bet-detail-value">ללא ניבוי מדויק</span>
+                                )}
                             </div>
                         </div>
 
