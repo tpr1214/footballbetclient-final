@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import ThemeToggle from "./ThemeToggle.jsx";
 import { useAuth } from "../auth/AuthContext.jsx";
+import { resolveImageUrl } from "../utils/imageUrl.js";
 import "./Navbar.css";
 
 function Navbar() {
@@ -56,9 +57,9 @@ function Navbar() {
                         <div className="nav-profile-icon">
                             {shouldShowProfileImage ? (
                                 <>
-                                    <img 
-                                        src={profileImageUrl} 
-                                        alt="Profile" 
+                                    <img
+                                        src={resolveImageUrl(profileImageUrl)}
+                                        alt="Profile"
                                         onError={() => setFailedProfileImageUrl(profileImageUrl)}
                                     />
                                 </>

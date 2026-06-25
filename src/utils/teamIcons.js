@@ -57,9 +57,27 @@ const LOGO_OVERRIDES = {
 
 let logoMapPromise;
 
+// Reverse lookup: every known team key (its Hebrew name AND each English alias),
+// normalized, maps back to the canonical Hebrew display name. This lets the UI
+// show Hebrew regardless of whether the backend stores the name in Hebrew or
+// English (e.g. "Maccabi Haifa" -> "מכבי חיפה").
+const HEBREW_NAME_BY_KEY = (() => {
+    const map = {};
+    Object.entries(TEAM_ALIASES).forEach(([hebrewName, aliases]) => {
+        map[normalizeName(hebrewName)] = hebrewName;
+        aliases.forEach((alias) => {
+            map[normalizeName(alias)] = hebrewName;
+        });
+    });
+    return map;
+})();
+
 export function getTeamName(team) {
     if (!team) return "";
-    return (typeof team === "string" ? team : team.name || "").trim();
+    const raw = (typeof team === "string" ? team : team.name || "").trim();
+    // Prefer the canonical Hebrew name when we recognize the team; otherwise keep
+    // whatever the backend sent so unknown teams still render.
+    return HEBREW_NAME_BY_KEY[normalizeName(raw)] || raw;
 }
 
 export function getTeamFallbackIcon(team) {
